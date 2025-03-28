@@ -1,0 +1,427 @@
+<%- include('../layout/user/header.ejs') %>
+
+<section style="margin: 60px;" class="content-main">
+  <!-- Order Detail Section -->
+  <div class="card">
+    <!-- Order Header -->
+    <header class="card-header">
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+          <span>
+            <% if (order && order.createdOn) { %>
+              <%= new Date(order.createdOn).toDateString() %>
+            <% } else { %>
+              Date not available
+            <% } %>
+          </span><br>
+          <small class="text-muted">Order ID: <%= order._id %></small>
+        </div>
+        <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+          <a href="/invoice?id=<%= order._id %>">View Invoice</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Order Body -->
+    <div class="card-body">
+      <div class="row mb-50 mt-20 order-info-wrap">
+        <div class="col-md-4">
+          <article class="icontext align-items-start">
+            <span class="icon icon-sm rounded-circle bg-primary-light">
+              <i class="text-primary material-icons md-person"></i>
+            </span>
+            <div class="text">
+              <h6 class="mb-1">Customer</h6>
+              <p class="mb-1">
+                <%= user.name %> <br>
+                <a href="mailto:<%= user.email %>"><%= user.email %></a><br>
+                +91 <%= user.phonenumber %>
+              </p>
+            </div>
+          </article>
+        </div>
+        <div class="col-md-4">
+          <article class="icontext align-items-start">
+            <span class="icon icon-sm rounded-circle bg-primary-light">
+              <i class="text-primary material-icons md-local_shipping"></i>
+            </span>
+            <div class="text">
+              <h6 class="mb-1">Order info</h6>
+              <p class="mb-1">
+                Shipping: Fargo Express <br>
+                Pay method: <%= order.payment %><br>
+              </p>
+            </div>
+          </article>
+        </div>
+        <div class="col-md-4">
+          <article class="icontext align-items-start">
+            <span class="icon icon-sm rounded-circle bg-primary-light">
+              <i class="text-primary material-icons md-place"></i>
+            </span>
+            <div class="text">
+              <h6 class="mb-1">Deliver to</h6>
+              <p class="mb-1">
+                <%= order.address.streetAddress %><br>
+                <%= order.address.city %><br>
+                <%= order.address.zipcode %>
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Order Products Table -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th width="40%">Product</th>
+                  <th width="20%">Unit Price</th>
+                  <th width="20%">Quantity</th>
+                  <th width="20%">size</th>
+                  <th width="20%" class="text-end">Total</th>
+                  <th width="20%">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (order && order.products && order.products.length > 0) { %>
+                  <% order.products.forEach(product => { %>
+                    <tr>
+                      <td class="align-middle">
+                        <a class="itemside" href="#">
+                          <div class="left">
+                            <img src="/static/uploads/<%= product.productId.images[0].filename %>" width="40"
+                              height="40" class="img-xs" alt="Item">
+                          </div>
+                          <div class="info">
+                            <%= product.productId.productName %>
+                          </div>
+                        </a>
+                      </td>
+                      <td class="align-middle">
+                        ₹<%= product.productId.salesPrice %>
+                      </td>
+                      <td class="align-middle">
+                        <%= product.quantity %>
+                      </td>
+                      <td>
+                         <%= product.size %></p> 
+                      </td>
+                      <td class="text-end align-middle">
+                        <strong>₹<%= product.productId.salesPrice * product.quantity %></strong>
+                      </td>
+                      <td class="align-middle text-center">
+                        <% if (order.status === "Completed") { %>
+                          <button type="button" class="btn btn-primary btn-sm" onclick="openReturnModal('<%= product.productId._id %>')">
+                            Return 
+                          </button>
+                          <% } else if (order.status === "Failed") { %>
+                            <button type="button" class="btn btn-success btn-sm" onclick="retryPayment('<%= order._id %>')">
+                              Retry Payment
+                            </button>
+                            
+                          <% } else { %>
+                          N/A
+                        <% } %>
+                      </td>
+                    </tr>
+                  <% }) %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="5" class="text-center">No products in this order</td>
+                  </tr>
+                <% } %>
+              </tbody>
+              <tfoot>
+                <!-- Cancel or Return Order Buttons -->
+                <tr>
+                  <td colspan="6">
+                    <% if (order.status === "Pending" || order.status === "Processing" || order.status === "Shipped") { %>
+                      <p id="cancelMessage" class="text-danger" style="display: none;">Your order is canceled</p>
+                      <button id="cancelOrderBtn" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal">Cancel Order</button>
+                    <% } else if (order.status === "Completed") { %>
+                      <button id="returnOrderBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#returnConfirmationModal">Return All Order</button>
+                    <% } else if (order.status === "Canceled") { %>
+                      Order Cancelled
+                    <% } %>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirm Cancel Order</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to cancel this order?</p>
+        <div class="mb-3">
+          <label for="cancelReason" class="form-label">Reason for Cancellation </label>
+          <textarea id="cancelReason" class="form-control" rows="3" placeholder="Enter your reason here..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button id="confirmBtn" type="button" class="btn btn-danger">Confirm Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Return Confirmation Modal -->
+<div class="modal fade" id="returnConfirmationModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="returnModalLabel">Confirm Return Order</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to return this order? Please provide a reason:</p>
+        <textarea id="returnReason" class="form-control" rows="3" placeholder="Enter your reason for return..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button id="confirmReturnBtn" type="button" class="btn btn-primary">Confirm Return</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let orderIdToCancel = '<%= order._id %>';  // Store order ID
+
+  // Cancel Order Functionality
+  document.getElementById('confirmBtn').addEventListener('click', async () => {
+  const cancelReason = document.getElementById('cancelReason').value.trim(); // Get the reason entered by the user
+
+  try {
+    const response = await fetch(`/user/cancelOrder/${orderIdToCancel}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason: cancelReason }), // Send the reason in the body
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.success) { // Check both response status and success flag
+      Swal.fire({
+        icon: 'success',
+        title: 'Order Canceled!',
+        text: 'Your order has been canceled successfully.',
+        showConfirmButton: true,
+      }).then(() => {
+        location.reload(); // Reload the page after confirmation
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: result.message || 'There was an issue canceling the order.',
+        showConfirmButton: true,
+      });
+    }
+  } catch (error) {
+    console.error('Cancel Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'An unexpected error occurred while canceling the order.',
+      showConfirmButton: true,
+    });
+  }
+});
+
+
+  // Return Order Functionality
+  document.getElementById('confirmReturnBtn').addEventListener('click', async () => {
+    const returnReason = document.getElementById('returnReason').value.trim(); // Get and trim the return reason
+
+    if (!returnReason) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Reason required!',
+        text: 'Please provide a reason for returning the order.',
+        showConfirmButton: true,
+      });
+      return; // Exit if no reason provided
+    }
+
+    try {
+      const response = await fetch(`/user/returnOrder/${orderIdToCancel}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason: returnReason }), // Send reason with request
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) { // Check both response status and success flag
+        Swal.fire({
+          icon: 'success',
+          title: 'Order Returned!',
+          text: 'Your order has been successfully returned.',
+          showConfirmButton: true,
+        }).then(() => {
+          location.reload(); // Reload the page after confirmation
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: result.message || 'There was an issue returning the order.',
+          showConfirmButton: true,
+        });
+      }
+    } catch (error) {
+      console.error('Return Error:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'An unexpected error occurred while returning the order.',
+        showConfirmButton: true,
+      });
+    }
+  });
+</script>
+
+<script>
+  function openReturnModal(productId) {
+  // Store productId globally or within the modal for use in the return request
+  document.getElementById('returnReason').value = ''; // Clear any previous reason
+  document.getElementById('confirmReturnBtn').onclick = function () {
+    confirmProductReturn(productId);
+  };
+  // Show the modal
+  const returnModal = new bootstrap.Modal(document.getElementById('returnConfirmationModal'));
+  returnModal.show();
+}
+
+async function confirmProductReturn(productId) {
+  const returnReason = document.getElementById('returnReason').value.trim();
+
+  if (!returnReason) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Reason required!',
+      text: 'Please provide a reason for returning the product.',
+      showConfirmButton: true,
+    });
+    return;
+  }
+
+  try {
+    const response = await fetch(`/user/returnProduct/${productId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason: returnReason }), // Send reason with request
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.success) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Product Returned!',
+        text: 'The product has been successfully returned.',
+        showConfirmButton: true,
+      }).then(() => {
+        location.reload();
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: result.message || 'There was an issue returning the product.',
+        showConfirmButton: true,
+      });
+    }
+  } catch (error) {
+    console.error('Return Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'An unexpected error occurred while returning the product.',
+      showConfirmButton: true,
+    });
+  }
+}
+</script>
+
+
+<script>
+  function retryPayment(orderId) {
+    fetch(`/api/retry-payment/${orderId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          const options = {
+            key: data.key_id, // Razorpay key ID
+            amount: data.amount, // Amount in paise
+            currency: data.currency, // Currency
+            name: "Shope...y",
+            description: "Retry Payment",
+            order_id: data.razorpayOrderId, // New Razorpay order ID
+            handler: function (response) {
+              // On successful payment
+              fetch(`/api/payment-success/${data.orderId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(response),
+              })
+                .then((res) => res.json())
+                .then((result) => {
+                  if (result.success) {
+                   
+                    location.reload(); // Reload the page to update order and cart status
+                  } 
+                  else {
+                    alert("Payment success not confirmed on backend.");
+                  }
+                });
+            },
+            prefill: {
+              name: "Customer Name",
+              email: "customer@example.com",
+            },
+          };
+
+          const razorpay = new Razorpay(options);
+          razorpay.open();
+        } else {
+          alert("Failed to retry payment: " + data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error retrying payment:", error);
+        alert("Error retrying payment.");
+      });
+  }
+</script>
+
+
+
+
+
+
+<%- include('../layout/user/footer.ejs') %>

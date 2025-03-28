@@ -1,0 +1,359 @@
+<%- include('../layout/admin/header') -%>
+
+
+    <section class="content-main">
+        <h2 class="content-title text-center">Add New Product</h2>
+        <form id="productForm" method="post" action="/admin/add-product" enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
+            <div class="row">
+                <div class="col-6">
+                    <div class="content-header">
+                        <link rel="stylesheet"
+                            href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h6>General info</h6>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="mb-4">
+                                        <label class="form-label">Product title</label>
+                                        <input name="productName" type="text" placeholder="Type here" id="product_title"
+                                            class="form-control">
+                                        <p class="text-danger" id="nameError"></p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Description</label>
+                                        <textarea name="description" placeholder="Type here" id="prod_description"
+                                            class="form-control" rows="4"></textarea>
+                                        <p class="text-danger" id="descError"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="mb-4 mt-0">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h6> Market Price</h6>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="mb-4">
+                                        <label class="form-label">Regular Rs</label>
+                                        <input name="marketPrice" type="text" placeholder="₹0.00" id="product_regPrice"
+                                            class="form-control">
+                                        <p class="text-danger" id="regPriceError"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h6>Sale Price</h6>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="mb-4">
+                                        <label class="form-label">Sale Price</label>
+                                        <input name="salePrice" type="text" placeholder="₹0.00" id="product_salePrice"
+                                            class="form-control">
+                                        <p class="text-danger" id="salePriceError"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="mb-4 mt-0">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h6>Category</h6>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="mb-4">
+                                        <% for(let i=0; i < categories.length; i++) { %>
+                                            <label class="mb-2 form-check form-check-inline" style="width: 45%;">
+                                                <input class="form-check-input" name="myCategory" type="radio"
+                                                    value="<%= categories[i]._id %>">
+                                                <span class="form-check-label">
+                                                    <%= categories[i].name %>
+                                                </span>
+                                            </label>
+                                            <% } %>
+                                                <p class="text-danger" id="categoryError"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="mb-4 mt-0">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h6>Media</h6>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="mb-4">
+                                        <label class="form-label">Images</label>
+                                        <input class="form-control" type="file" name="images" id="images" multiple>
+                                        <p class="text-danger" id="imageError"></p>
+                                        <div id="newImagesPreviewContainer" style="margin-top: 20px;"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h6> Size</h6>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="mb-4">
+                                            <label class="form-label">Size</label>
+                                            <select name="size" id="product_size" class="form-control">
+                                                <option value="">Select Size</option>
+                                                <option value="XS">XS</option>
+                                                <option value="S">S</option>
+                                                <option value="M">M</option>
+                                                <option value="L">L</option>
+                                                <option value="XL">XL</option>
+                                                <option value="XXL">XXL</option>
+                                            </select>
+                                            <p class="text-danger" id="sizeError"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h6>Quantity</h6>
+                                </div>
+                                
+                                <div class="col-md-9">
+                                    <div class="mb-4">
+                                        <label class="form-label">Quantity</label>
+                                        <input name="quantity" type="number" placeholder="0" id="prod_stock" class="form-control">
+                                        <p class="text-danger" id="stockError"></p>
+                                    </div>
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-md rounded font-sm hover-up">Add Product</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </form>
+    </section>
+
+
+    <script>
+        let cropperInstances = [];
+        let imageFiles = [];
+
+        // Validate the form
+        function validateForm() {
+            let isValid = true;
+
+            // Clear previous errors
+            document.getElementById("nameError").innerText = "";
+            document.getElementById("descError").innerText = "";
+            document.getElementById("regPriceError").innerText = "";
+            document.getElementById("salePriceError").innerText = "";
+            document.getElementById("categoryError").innerText = "";
+            document.getElementById("imageError").innerText = "";
+            document.getElementById("sizeError").innerText = "";
+            document.getElementById("stockError").innerText = "";
+
+            // Validate Product Title
+            const productTitle = document.getElementById("product_title").value.trim();
+            if (productTitle === "") {
+                document.getElementById("nameError").innerText = "Product title is required.";
+                isValid = false;
+            }
+
+            // Validate Description
+            const description = document.getElementById("prod_description").value.trim();
+            if (description === "") {
+                document.getElementById("descError").innerText = "Description is required.";
+                isValid = false;
+            }
+
+            // Validate Market Price
+            const marketPrice = document.getElementById("product_regPrice").value.trim();
+            if (marketPrice === "" || isNaN(marketPrice) || parseFloat(marketPrice) <= 0) {
+                document.getElementById("regPriceError").innerText = "Valid market price is required.";
+                isValid = false;
+            }
+
+            // Validate Sale Price
+            const salePrice = document.getElementById("product_salePrice").value.trim();
+            if (salePrice === "" || isNaN(salePrice) || parseFloat(salePrice) <= 0) {
+                document.getElementById("salePriceError").innerText = "Valid sale price is required.";
+                isValid = false;
+            }
+
+            // Validate Category
+            const categories = document.getElementsByName("myCategory");
+            let categorySelected = false;
+            for (let i = 0; i < categories.length; i++) {
+                if (categories[i].checked) {
+                    categorySelected = true;
+                    break;
+                }
+            }
+            if (!categorySelected) {
+                document.getElementById("categoryError").innerText = "Category selection is required.";
+                isValid = false;
+            }
+
+            // Validate Images
+            if (imageFiles.length === 0) {
+                document.getElementById("imageError").innerText = "At least one image is required.";
+                isValid = false;
+            }
+
+            // Validate Quantity
+            const quantity = document.getElementById("prod_stock").value.trim();
+            if (quantity === "" || isNaN(quantity) || parseInt(quantity) < 0) {
+                document.getElementById("stockError").innerText = "Valid quantity is required.";
+                isValid = false;
+            }
+
+         // Validate Size
+    const size = document.getElementById("product_size").value;
+    if (size === "") {
+        document.getElementById("sizeError").innerText = "Please select a size.";
+        isValid = false;
+    }
+
+            return isValid;
+        }
+
+        // Handle the form submission and crop the images manually
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            if (!validateForm()) {
+                return false;
+            }
+
+            const formData = new FormData(event.target);
+
+            for (let i = 0; i < cropperInstances.length; i++) {
+                const cropper = cropperInstances[i];
+                const croppedCanvas = cropper.getCroppedCanvas();
+                const blob = await new Promise(resolve => croppedCanvas.toBlob(resolve));
+                formData.append(`croppedImage${i}`, blob, `croppedImage${i}.png`);
+            }
+
+            // Submit the form using fetch
+            fetch('/admin/add-product', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Product added successfully',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = "/admin/product-management";
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Error adding product',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }).catch(error => {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error adding product',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                console.error('Error adding product', error);
+            });
+
+            return false;
+        }
+
+
+
+        // Handle new image previews
+        document.getElementById("images").addEventListener("change", function (event) {
+            const files = event.target.files;
+            const previewContainer = document.getElementById("newImagesPreviewContainer");
+            previewContainer.innerHTML = '';  // Clear previous previews
+            cropperInstances = [];  // Reset cropper instances
+            imageFiles = Array.from(files); // Reset image files
+
+            if (files && files.length > 0) {
+                Array.from(files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxWidth = '100px';
+                        img.style.maxHeight = '100px';
+                        img.style.marginRight = '10px';
+                        img.style.position = 'relative';
+                        img.style.display = 'inline-block';
+
+                        const container = document.createElement('div');
+                        container.style.display = 'inline-block';
+                        container.style.position = 'relative';
+                        container.style.marginRight = '10px';
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.innerText = 'X';
+                        deleteButton.style.position = 'absolute';
+                        deleteButton.style.top = '2px';
+                        deleteButton.style.right = '2px';
+                        deleteButton.style.background = 'rgb(199, 22, 22)';
+                        deleteButton.style.color = 'white';
+                        deleteButton.style.border = 'none';
+                        deleteButton.style.fontSize = '10px';
+                        deleteButton.style.cursor = 'pointer';
+                        deleteButton.onclick = function () {
+                            deleteImage(index, container);
+                        };
+
+                        container.appendChild(img);
+                        container.appendChild(deleteButton);
+                        previewContainer.appendChild(container);
+
+                        const cropper = new Cropper(img, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            autoCropArea: 1,
+                            movable: true,
+                            scalable: true,
+                            zoomable: true,
+                            rotatable: true
+                        });
+
+                        cropperInstances.push(cropper);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        function deleteImage(index, container) {
+            // Remove the cropper instance
+            cropperInstances[index].destroy();
+            cropperInstances.splice(index, 1);
+
+            // Remove the image file
+            imageFiles.splice(index, 1);
+
+            // Remove the image preview container
+            container.remove();
+        }
+
+        function deleteSingleImage(productId, filename) {
+            // Implement the deletion logic
+            console.log('Deleting image:', filename);
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+    <%- include('../layout/admin/footer') -%>

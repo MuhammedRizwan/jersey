@@ -1,0 +1,130 @@
+<%- include("../layout/admin/header") %>
+
+  <section class="content-main">
+    <div class="row">
+      <div class="col-12">
+        <div class="content-header col-8">
+          <h2 class="content-title">Edit Coupon</h2>
+        </div>
+        <div class="col-lg-10">
+          <form action="/admin/updateCoupon/<%= coupon._id %>" method="post" onsubmit="return validateForm();">
+            <div class="mb-4">
+              <label for="couponName" class="form-label">Coupon name</label>
+              <input type="text" placeholder="Type here" name="name" class="form-control" value="<%= coupon.name %>"
+                id="couponName" required>
+              <p id="nameError" class="text-danger"></p>
+            </div>
+
+            <div class="mb-4">
+              <label for="couponCode" class="form-label">Coupon code</label>
+              <input type="text" placeholder="Type here" name="code" value="<%= coupon.code %>" class="form-control"
+                id="couponCode" required>
+              <p id="couponCodeError" class="text-danger"></p>
+            </div>
+
+            <div class="row gx-3">
+              
+              <div class="mb-4 col-md-6">
+                <label for="minimumAmount" class="form-label">Minimum Amount</label>
+                <input type="number" placeholder="Type here" name="minimumAmount" value="<%= coupon.minimumAmount %>"
+                  class="form-control" id="minimumAmount" step="0.01" min="0">
+                <p id="minimumAmountError" class="text-danger"></p>
+              </div>
+              <div class="mb-4 col-md-6">
+                <label for="maxDiscountAmount" class="form-label">Maximum Amount</label>
+                <input type="number" placeholder="Type here" name="maximumAmount" class="form-control"
+                  id="maxDiscountAmount" value="<%= coupon.maximumAmount %>" step="0.01" min="0">
+                <p id="maxDiscountAmountError" class="text-danger"></p>
+              </div>
+
+              <div class="mb-4 col-md-6">
+                <label for="discount" class="form-label">Percentage Discount</label>
+                <div class="input-group">
+                  <input type="number" placeholder="Type here" name="discount" value="<%= coupon.discount %>"
+                    class="form-control" id="discount" step="0.01" min="0" required>
+                  <span class="input-group-text">%</span>
+                </div>
+                <p id="percentageDiscountError" class="text-danger"></p>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="expiryDate" class="form-label">Expiry Date</label>
+              <input type="date" placeholder="Type here" name="expiryDate"
+                value="<%= coupon.expiryDate.toISOString().split('T')[0] %>" class="form-control" id="expiryDate"
+                required>
+              <p id="expiryDateError" class="text-danger"></p>
+            </div>
+
+            <button type="submit" class="btn btn-md rounded font-sm hover-up">Save Coupon</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    function validateForm() {
+      let isValid = true;
+
+      // Coupon name validation
+      const name = document.getElementById("couponName").value;
+      if (!name) {
+        document.getElementById("nameError").innerText = "Coupon name is required.";
+        isValid = false;
+      } else {
+        document.getElementById("nameError").innerText = "";
+      }
+
+      // Coupon code validation
+      const code = document.getElementById("couponCode").value;
+      if (!code) {
+        document.getElementById("couponCodeError").innerText = "Coupon code is required.";
+        isValid = false;
+      } else {
+        document.getElementById("couponCodeError").innerText = "";
+      }
+
+      // Discount validation
+      const discount = document.getElementById("discount").value;
+      if (!discount || discount <= 0) {
+        document.getElementById("percentageDiscountError").innerText = "Valid discount is required.";
+        isValid = false;
+      } else {
+        document.getElementById("percentageDiscountError").innerText = "";
+      }
+
+      // Expiry date validation
+      const expiryDate = document.getElementById("expiryDate").value;
+      if (!expiryDate) {
+        document.getElementById("expiryDateError").innerText = "Expiry date is required.";
+        isValid = false;
+      } else {
+        document.getElementById("expiryDateError").innerText = "";
+      }
+      // Maximum amount validation
+      const maxDiscountAmount = document.getElementById("maxDiscountAmount").value;
+      if (maxDiscountAmount && maxDiscountAmount <= 0) {
+        document.getElementById("maxDiscountAmountError").innerText = "Maximum amount must be greater than zero.";
+        isValid = false;
+      } else {
+        document.getElementById("maxDiscountAmountError").innerText = "";
+      }
+
+      // If form is valid, show SweetAlert success message
+      if (isValid) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Coupon updated successfully!',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      }
+
+      return isValid;
+    }
+  </script>
+
+  <%- include("../layout/admin/footer") %>

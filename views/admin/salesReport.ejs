@@ -1,0 +1,247 @@
+<%- include("../layout/admin/header") %>
+
+<section class="content-main">
+  <div class="content-header">
+    <div>
+      <h2 class="content-title card-title">Sales Report</h2>
+      <p>Select a report type:</p>
+    </div>
+    <div>
+      <button onclick="downloadPDF()" id="downloadPDFButton" class="btn btn-md rounded font-sm hover-up">Download PDF</button>
+      <button onclick="downloadExcel()" id="downloadExcelButton" class="btn btn-md rounded font-sm hover-up">Download Excel</button>
+    </div>
+  </div>
+
+  <!-- Add Total Sales and Discount Summary here -->
+  
+
+  <div class="card mb-4">
+    <header class="card-header">
+      <div class="row gx-3">
+        <!-- Report Type Selection -->
+        <div class="col-lg-2 col-6 col-md-3">
+          <select id="reportType" class="form-select" onchange="handleReportTypeChange()">
+            <option value="1-day">1 Day</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+            <option value="custom">Custom Date Range</option>
+          </select>
+        </div>
+
+      <!-- Custom Date Range Inputs -->
+      <div class="col-md-2 col-6">
+        <input type="date" id="customStartDate" class="form-control" style="display: none;" />
+      </div>
+      <div class="col-md-2 col-6">
+        <input type="date" id="customEndDate" class="form-control" style="display: none;" />
+      </div>
+
+      <div class="col-lg-2 col-6 col-md-3">
+        <button onclick="updateSalesReport()" class="btn btn-primary">Generate Report</button>
+      </div>
+    </div>
+  </header><!-- Sales Report Table -->
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <div>
+          <h4>Total Sales Count: <%= totalSalesCount %></h4>
+          <h4>Total Sales Amount: $<%= totalSalesAmount.toFixed(2) %></h4>
+        </div>
+        <thead>
+          <tr>
+            <th>ORDER ID</th>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% orders.forEach(order => { %>
+            <% order.products.forEach(product => { %>
+              <tr>
+                <td><a href="#" class="fw-bold">#<%= order.orderNumber %></a></td>
+                <td><%= new Date(order.createdOn).toLocaleDateString() %></td>
+                <td><%= order.user ? order.user.name : 'N/A' %></td>
+                <td><%= product.productId ? product.productId.productName : 'N/A' %></td>
+                <td><%= product.quantity %></td>
+                <td>$<%= order.totalPrice.toFixed(2) %></td>
+                <td><%= order.status %></td>
+              </tr>
+            <% }) %>
+          <% }) %>
+        </tbody>
+      </table>
+      
+      <!-- Pagination Controls -->
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          <% if (currentPage > 1) { %>
+            <li class="page-item">
+              <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>&reportType=<%= reportType %><%= startDate ? '&startDate=' + startDate : '' %><%= endDate ? '&endDate=' + endDate : '' %>">Previous</a>
+            </li>
+          <% } %>
+          
+          <% for (let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= i === parseInt(currentPage) ? 'active' : '' %>">
+              <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>&reportType=<%= reportType %><%= startDate ? '&startDate=' + startDate : '' %><%= endDate ? '&endDate=' + endDate : '' %>"><%= i %></a>
+            </li>
+          <% } %>
+          
+          <% if (currentPage < totalPages) { %>
+            <li class="page-item">
+              <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>&reportType=<%= reportType %><%= startDate ? '&startDate=' + startDate : '' %><%= endDate ? '&endDate=' + endDate : '' %>">Next</a>
+            </li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+    
+  </div>
+</div>
+
+</section>
+
+<%- include("../layout/admin/footer") %>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+<script>
+ async function downloadPDF() {
+    const reportType = document.getElementById("reportType").value;
+    const startDate = document.getElementById("customStartDate").value;
+    const endDate = document.getElementById("customEndDate").value;
+
+    // Prepare the query parameters
+    let queryString = `?reportType=${reportType}`;
+    if (reportType === 'custom') {
+        queryString += `&startDate=${startDate}&endDate=${endDate}`;
+    }
+
+    // Fetch the PDF from the server
+    const response = await fetch(`/admin/salesReport/download/pdf${queryString}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            orders: <%- JSON.stringify(orders) %>, // Include orders in the request body
+            totalSalesCount: <%= totalSalesCount %>,
+            totalSalesAmount: <%= totalSalesAmount.toFixed(2) %>
+        })
+    });
+
+    if (response.ok) {
+        // Create a Blob from the PDF stream
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'sales-report.pdf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    } else {
+        alert('Failed to download PDF');
+    }
+}
+
+</script>
+
+<script>
+ async function downloadExcel() {
+    const reportType = document.getElementById("reportType").value;
+    const startDate = document.getElementById("customStartDate").value;
+    const endDate = document.getElementById("customEndDate").value;
+
+    // Build the query string
+    let queryString = `?reportType=${reportType}`;
+    if (reportType === 'custom') {
+        queryString += `&startDate=${startDate}&endDate=${endDate}`;
+    }
+
+    // Send request to the server to download the Excel report
+    const response = await fetch(`/admin/salesReport/download/excel${queryString}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            orders: <%- JSON.stringify(orders) %>,
+            totalSalesCount: <%= totalSalesCount %>,
+            totalSalesAmount: <%= totalSalesAmount.toFixed(2) %>
+        })
+    });
+
+    if (response.ok) {
+        // Create a Blob from the Excel stream
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'sales-report.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    } else {
+        alert('Failed to download Excel');
+    }
+}
+
+</script>
+
+<script>
+
+
+
+
+  function handleReportTypeChange() {
+    const reportType = document.getElementById("reportType").value;
+    const startDateField = document.getElementById("customStartDate");
+    const endDateField = document.getElementById("customEndDate");
+
+    if (reportType === 'custom') {
+      startDateField.style.display = 'block';
+      endDateField.style.display = 'block';
+    } else {
+      startDateField.style.display = 'none';
+      endDateField.style.display = 'none';
+      startDateField.value = '';
+      endDateField.value = '';
+    }
+  }
+
+
+
+  function updateSalesReport() {
+    const reportType = document.getElementById("reportType").value;
+    const startDate = document.getElementById("customStartDate").value;
+    const endDate = document.getElementById("customEndDate").value;
+
+    if (reportType === 'custom' && (!startDate || !endDate)) {
+      Swal.fire({
+                        title: 'Error!',
+                        text: 'No Order this Date',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+      return;
+    }
+
+    let queryString = `?reportType=${reportType}`;
+    if (reportType === 'custom') {
+      queryString += `&startDate=${startDate}&endDate=${endDate}`;
+    }
+
+    window.location.href = `/admin/salesReport${queryString}`;
+  }
+
+
+
+  
+</script>

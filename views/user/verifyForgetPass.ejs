@@ -1,0 +1,119 @@
+<div class="otp-page">
+    <div class="otp-container">
+      <div class="products-catagories-area">
+        <div class="amado-pro-catagory">
+          <div class="wrap-login100">
+            <form class="login100-form validate-form p-l-55 p-r-55 p-t-178" action="/verifyForgetPass" method="post">
+              <span class="login100-form-title">Forgot password?</span>
+            
+              <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter your email">
+                <input id="email" class="input100" type="email" name="email" placeholder="Enter your email" required />
+                <span class="focus-input100"></span>
+              </div>
+              <div class="container-login100-form-btn">
+                <button type="submit" class="login100-form-btn">Verify</button>
+              </div>
+              <div class="flex-col-c p-t-30 p-b-20">
+                <span class="txt1 p-b-9">Back to sign in?</span>
+                <a href="/login" class="txt3">Sign in</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .otp-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+    }
+  
+    .otp-container {
+      max-width: 500px;
+      width: 100%;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  
+    .error-message {
+      color: red;
+      font-size: 0.875em;
+      margin-bottom: 15px;
+    }
+  
+    .login100-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .login100-form-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  
+    .wrap-input100 {
+      width: 100%;
+      position: relative;
+      margin-bottom: 16px;
+    }
+  
+    .input100 {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+  
+    .focus-input100 {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  
+    .container-login100-form-btn {
+      width: 100%;
+      text-align: center;
+    }
+  
+    .login100-form-btn {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  
+    .login100-form-btn:hover {
+      background-color: #0056b3;
+    }
+  
+    .flex-col-c {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .txt1 {
+      margin-bottom: 9px;
+    }
+  
+    .txt3 {
+      color: #007bff;
+      text-decoration: none;
+    }
+  
+    .txt3:hover {
+      text-decoration: underline;
+    }
+  </style>
+  

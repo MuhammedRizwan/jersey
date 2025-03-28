@@ -1,0 +1,177 @@
+<%- include("../layout/admin/header") %>
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-12">
+            <div class="content-header col-8">
+                <h2 class="content-title">Add New Coupon</h2>
+            </div>
+            <div class="col-lg-10">
+              <form action="/admin/addCoupon" method="post" onsubmit="return validateForm();">
+                <div class="mb-4">
+                        <label for="couponName" class="form-label">Coupon name</label>
+                        <input type="text" placeholder="Type here" name="name" class="form-control"
+                            id="couponName">
+                        <p id="nameError" class="text-danger"></p>
+                    </div>
+
+                    <div class="mb-4">
+                      <label for="couponDescription" class="form-label">Coupon code</label>
+                      <div class="input-group">
+                        <input type="text" placeholder="Type here" name="code" class="form-control" id="couponDescription">
+                        <button type="button" class="btn btn-secondary" onclick="generateCouponCode()">Generate Code</button>
+                      </div>
+                      <div>
+                        <% if (typeof message !== 'undefined') { %>
+                          <%= message %>
+                        <% } %>
+                      </div>
+                      <p id="couponCodeError" class="text-danger"></p>
+                    </div>
+                    
+                    
+                  
+                    <div class="row gx-3">
+                        <div class="mb-4 col-md-6">
+                            <label for="percentageDiscount" class="form-label">Percentage
+                                Discount</label>
+                            <div class="input-group">
+                                <input type="number" placeholder="Type here" name="discount"
+                                    class="form-control" id="discount" step="0.01" min="0" max="100">
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <p id="percentageDiscountError" class="text-danger"></p>
+                        </div>
+
+                        <div class="mb-4 col-md-6">
+                            <label for="minimumAmount" class="form-label">Minimum Amount</label>
+                            <input type="number" placeholder="Type here" name="minimumAmount"
+                                class="form-control" id="minimumAmount" step="0.01" min="0">
+                            <p id="minimumAmountError" class="text-danger"></p>
+                        </div>
+                        <div class="mb-4">
+                          <label for="maximumAmount" class="form-label">Maximum Amount</label>
+                          <input type="number" placeholder="Type here" name="maximumAmount"
+                              class="form-control" id="maximumAmount" step="0.01" min="0">
+                          <p id="maximumAmountError" class="text-danger"></p>
+                      </div>
+                      
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="expiryDate" class="form-label">Expiry Date</label>
+                        <input type="date" placeholder="Type here" name="expiryDate"
+                            class="form-control" id="expiryDate">
+                        <p id="expiryDateError" class="text-danger"></p>
+                    </div>
+
+                    <button type="submit" class="btn btn-md rounded font-sm hover-up">Add
+                        Coupon</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+function generateCouponCode() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < 8; i++) {  // Adjust the length of the code as needed
+    code += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  document.getElementById("couponDescription").value = code;
+}
+
+
+
+  function validateForm() {
+    let isValid = true;
+
+    function clearErrorMessage(id){
+setTimeout(()=>{
+  document.getElementById(id).innerText=""
+},3000)
+}
+
+    // Coupon name validation
+    const name = document.getElementById("couponName").value;
+    if (!name) {
+      document.getElementById("nameError").innerText = "Coupon name is required.";
+      isValid = false;
+      clearErrorMessage("nameError");
+
+    } 
+
+    // Coupon code validation
+    const code = document.getElementById("couponDescription").value;
+    if (!code) {
+      document.getElementById("couponCodeError").innerText = "Coupon code is required.";
+      isValid = false;
+
+      clearErrorMessage("couponCodeError")
+    } 
+
+    // Discount validation
+    const discount = document.getElementById("discount").value;
+    if (!discount || discount <= 0) {
+      document.getElementById("percentageDiscountError").innerText = "Valid discount is required.";
+      isValid = false;
+      clearErrorMessage("percentageDiscountError")
+    } 
+
+    //minimum amount
+    const minimumAmount=document.getElementById("minimumAmount").value
+    if(!minimumAmount||minimumAmount<=0){
+      document.getElementById("minimumAmountError").innerText="Minimum amount must be greater than zero"
+      clearErrorMessage("minimumAmountError")
+      isValid=false
+    } else if (minimumAmount.includes('%')) {
+    document.getElementById("minimumAmountError").innerText = "Minimum amount cannot include '%'.";
+    clearErrorMessage("minimumAmountError");
+    isValid = false;
+  }
+
+    // maximum amount validation
+    const maximumAmount=document.getElementById("maximumAmount").value
+    if(!maximumAmount||maximumAmount<=0){
+      document.getElementById("maximumAmountError").innerText="Maximum amount mustbe greater than zero"
+      clearErrorMessage("maximumAmountError")
+      isValid=false
+    } else if (maximumAmount.includes('%')) {
+    document.getElementById("maximumAmountError").innerText = "Maximum amount cannot include '%'.";
+    clearErrorMessage("maximumAmountError");
+    isValid = false;
+  } else if (Number(maximumAmount) < Number(minimumAmount)) {
+    document.getElementById("maximumAmountError").innerText = "Maximum amount cannot be less than minimum amount.";
+    clearErrorMessage("maximumAmountError");
+    isValid = false;
+  }
+
+    // Expiry date validation
+    const expiryDate = document.getElementById("expiryDate").value;
+    if (!expiryDate) {
+      document.getElementById("expiryDateError").innerText = "Expiry date is required.";
+      isValid = false;
+
+      clearErrorMessage("expiryDateError")
+    } 
+
+    // If the form is valid, show SweetAlert success notification
+    if (isValid) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Coupon added successfully!',
+        showConfirmButton: false,
+        timer: 1500
+      })
+    }
+
+    return isValid;
+  }
+</script>
+
+<%- include("../layout/admin/footer") %>

@@ -1,0 +1,313 @@
+<%- include('../layout/admin/header.ejs') %>
+
+    <body>
+        <aside class="navbar-aside" id="offcanvas_aside">
+            <div class="aside-top">
+                <a href="index.html" class="brand-wrap">
+                    <img src="/static/assets/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
+                </a>
+                <div>
+                    <button class="btn btn-icon btn-aside-minimize">
+                        <i class="text-muted material-icons md-menu_open"></i>
+                    </button>
+                </div>
+            </div>
+            <nav>
+                <ul class="menu-aside">
+                    <li class="menu-item">
+                        <a class="menu-link" href="/admin/adminDashboard"> <i class="icon material-icons md-home"></i>
+                            <span class="text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a class="menu-link" href="/admin/product-management"> <i class="icon material-icons md-shopping_bag"></i>
+                            <span class="text">Products</span>
+                        </a>
+                       
+                    </li>
+                       
+                    <li class="menu-item">
+                        <a class="menu-link" href="/admin/users">
+                            <i class="icon material-icons md-person"></i>
+                            Users
+                        </a>                  
+                    </li>
+                    <li class="menu-item">
+                        <a class="menu-link" href="/admin/add-product"> <i class="icon material-icons md-add_box"></i>
+                          <span class="text">Add product</span>
+                        </a>
+                      </li> 
+                      <li class="menu-item">
+                        <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-stars"></i>
+                          <span class="text">Add category</span>
+                        </a>
+                      </li> 
+                      <li class="menu-item ">
+                        <a class="menu-link" href="/admin/orderManagement"> <i class="icon material-icons md-shopping_cart"></i>
+                            <span class="text">Orders</span>
+                        </a>
+                    </li> 
+                    <li class="menu-item ">
+                        <a class="menu-link" href="/admin/coupons"> <i class="icon material-icons md-stars"></i>
+                            <span class="text">Coupons</span> </a>
+                    </li>
+                                      
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-wrap">
+            <header class="main-header navbar">
+                <div class="col-search">
+                    <form class="searchform">
+                        <datalist id="search_terms">
+                            <option value="Products">
+                            <option value="New orders">
+                            <option value="Apple iphone">
+                            <option value="Ahmed Hassan">
+                        </datalist>
+                    </form>
+                </div>
+                <div class="col-nav">
+                    <a class="dropdown-item text-danger" href="/admin/logout">
+                        <i class="material-icons md-exit_to_app"></i>Logout
+                    </a>
+                </div>
+            </header>
+            <section>
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Products List</h2>
+                    </div>
+                    <div>
+                        <a href="/admin/add-product" class="btn btn-primary btn-sm rounded">Create new</a>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="container">
+                        <!-- Table with headers -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 5%;">#</th>
+                                        <th style="width: 20%;">Product</th>
+                                        <th style="width: 10%;">Price (₹)</th>
+                                        <th style="width: 15%;">Stock</th>
+                                        <th style="width: 10%;">Date</th>
+                                        <th style="width: 15%;">Offer Price</th>
+                                        <th style="width: 15%;">Actions</th>
+                                        <th style="width: 10%;">Offer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% products.forEach((product, index) => { %>
+                                        <tr>
+                                            <td><%= index + 1 %></td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-3">
+                                                        <% if (product.images.length > 0) { %>
+                                                            <img src="/static/uploads/<%= product.images[0].filename %>"
+                                                                class="img-sm img-thumbnail" alt="Product">
+                                                        <% } else { %>
+                                                            <img src="/static/uploads/default-placeholder.png"
+                                                                class="img-sm img-thumbnail" alt="No Image">
+                                                        <% } %>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0"><%= product.productName %></h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>₹ <%= product.salesPrice %></td>
+                                            <td>Available stock <b><%= product.quantity %></b></td>
+                                            <td><%= new Date(product.createdOn).toLocaleDateString('en-GB') %></td>
+                                            <td>₹ <%= product.offerPrice ? product.offerPrice : product.salesPrice %>
+                                                <% if (product.offerPercentage > 0) { %>
+                                                    <small class="text-muted">(Offer: <%= product.offerPercentage %>%)</small>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <a href="/admin/edit-product/<%= product.id %>"
+                                                    class="btn btn-sm font-sm rounded btn-brand">
+                                                    <i class="material-icons md-edit"></i> Edit
+                                                </a>
+                                                <a href="" class="deletebtn btn btn-sm font-sm btn-light rounded"
+                                                    data-id="<%= product.id %>">
+                                                    <i class="material-icons md-delete_forever"></i> Delete
+                                                </a>
+                                            </td>
+                                            <td>
+                                                
+                                                <% if (product.offerPercentage > 0) { %>
+                                                    <button class="btn btn-sm btn-danger removeOfferBtn"
+                                                        data-id="<%= product._id %>">
+                                                        Remove Off
+                                                    </button>
+                                                <% }else{ %>
+                                                    <button class="btn btn-sm btn-info applyOfferBtn" data-id="<%= product._id %>"
+                                                        data-bs-toggle="modal" data-bs-target="#offerModal">
+                                                        Apply Offer
+                                                    </button>
+                                                    <%}%>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Pagination -->
+                    <div class="pagination mt-3">
+                        <% if (currentPage > 1) { %>
+                            <a href="/admin/product-management?page=<%= currentPage - 1 %>" class="btn btn-sm btn-primary">Previous</a>
+                        <% } %>
+                        <span>Page <%= currentPage %> of <%= totalPages %></span>
+                        <% if (currentPage < totalPages) { %>
+                            <a href="/admin/product-management?page=<%= currentPage + 1 %>" class="btn btn-sm btn-primary">Next</a>
+                        <% } %>
+                    </div>
+                </div>
+            </section>
+            
+            <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="offerModalLabel">Apply Offer</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="offerForm">
+                                <div class="form-group">
+                                    <label for="offerPercentage">Offer Percentage (%)</label>
+                                    <input type="number" class="form-control" min="1" max="100" id="offerPercentage"
+                                        name="offerPercentage" required>
+                                </div>
+                                <input type="hidden" id="productId" name="productId">
+                                <button type="submit" class="btn btn-primary">Apply Offer</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+        </main>
+    </body>
+
+    <%- include('../layout/admin/footer') -%>
+
+        <script>
+            $(document).ready(function () {
+                let productIdToDelete = null;
+                let productIdToApplyOffer = null;
+
+                // Open the modal and set the product ID for offer application
+                $('.applyOfferBtn').on('click', function () {
+                    productIdToApplyOffer = $(this).data('id');
+                    $('#productId').val(productIdToApplyOffer);
+                });
+
+                // Handle offer form submission
+                $('#offerForm').on('submit', function (e) {
+                    e.preventDefault();
+                    const offerData = {
+                        offerPercentage: $('#offerPercentage').val(),
+                        productId: $('#productId').val()
+                    };
+
+                    $.ajax({
+                        url: '/admin/apply-offer',
+                        type: 'POST',
+                        data: offerData,
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire('Success', 'Offer applied successfully!', 'success').then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Error', response.message, 'error');
+                            }
+                        },
+                        error: function (xhr) {
+                            Swal.fire('Error', xhr.responseText, 'error');
+                        }
+                    });
+                });
+
+                // Handle delete button click
+                $('.deletebtn').on('click', function (e) {
+                    e.preventDefault();
+                    productIdToDelete = $(this).data('id');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: `/admin/delete-product/${productIdToDelete}`,
+                                type: 'DELETE',
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire('Deleted!', 'Your product has been deleted.', 'success').then(() => {
+                                            location.reload();
+                                        });
+                                    } else {
+                                        Swal.fire('Error', response.message, 'error');
+                                    }
+                                },
+                                error: function (xhr) {
+                                    Swal.fire('Error', xhr.responseText, 'error');
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+
+            // Handle remove offer button click
+            $('.removeOfferBtn').on('click', function (e) {
+                e.preventDefault();
+                const productIdToRemoveOffer = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This will remove the offer from the product!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, remove it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/admin/remove-offer',
+                            type: 'POST',
+                            data: { productId: productIdToRemoveOffer },
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire('Success', 'Offer removed successfully!', 'success').then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire('Error', response.message, 'error');
+                                }
+                            },
+                            error: function (xhr) {
+                                Swal.fire('Error', xhr.responseText, 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+
+
+        </script>

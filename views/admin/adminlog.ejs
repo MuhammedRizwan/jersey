@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Admin Login</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+        }
+        .container {
+            max-width: 1050px;
+            width: 100%;
+        }
+        .panel {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .panel-heading {
+            background-color: #17a2b8;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .panel-body {
+            padding: 20px;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        #err2 {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Admin Login</h2>
+                </div>
+                <div class="panel-body">
+                    <form id="loginForm" role="form" action="/admin/adminLogin" method="post">
+                        <div class="mb-3">
+                            <input class="form-control" placeholder="Email" name="email" type="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <input class="form-control" placeholder="Password" name="password" type="password" required>
+                        </div>
+                        <div id="err2"></div>
+                        <% if(locals.err) { %>
+                            <span id="err2"><%= message %></span>
+                        <% } %>
+                        <div class="d-flex justify-content-center mt-3">
+                        <button type="submit" class="btn btn-lg btn-success btn-block mt-3" >Login</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        var email = document.querySelector('input[name="email"]').value;
+        var password = document.querySelector('input[name="password"]').value;
+        var errorDiv = document.getElementById('err2');
+        errorDiv.innerHTML = '';
+
+        var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailPattern.test(email)) {
+            event.preventDefault();
+            errorDiv.innerHTML = 'Invalid email format. Must be in the format: example@gmail.com';
+            setTimeout(function() {
+                errorDiv.innerHTML = '';
+            }, 4000);
+        } else if (password.length < 6) {
+            event.preventDefault();
+            errorDiv.innerHTML = 'Password must be at least 6 characters long.';
+            setTimeout(function() {
+                errorDiv.innerHTML = '';
+            }, 4000);
+        } else if (email !== adminEmail) {
+            event.preventDefault();
+            errorDiv.innerHTML = 'Email is not found.';
+            setTimeout(function() {
+                errorDiv.innerHTML = '';
+            }, 4000);
+        } else if (password !== adminPassword) {
+            event.preventDefault();
+            errorDiv.innerHTML = 'Incorrect password. Please enter it correctly.';
+            setTimeout(function() {
+                errorDiv.innerHTML = '';
+            }, 4000);
+        }
+    });
+</script>
+
+
+
+
+</body>
+</html>

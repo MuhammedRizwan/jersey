@@ -1,0 +1,243 @@
+<%- include("../layout/admin/header") %>
+<main class="main-wrap">
+    <header class="main-header navbar">
+        <div class="col-search"></div>
+        <div class="col-nav">
+            <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
+        </div>
+    </header>
+    <section >
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Dashboard</h2>
+                <p>Whole data about your business here</p>
+            </div>
+            <div>
+                <a href="/admin/salesReport" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Sales report</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Revenue</h6>
+                            <span>₹<%= revenue.toLocaleString() %></span>
+                            <span class="text-sm">Shipping fees are not included</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Orders</h6>
+                            <span><%= orders %></span>
+                            <span class="text-sm">Excluding orders in transit</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Products</h6>
+                            <span><%= product %></span>
+                            <span class="text-sm">In <%= category %> Categories</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-shopping_basket"></i></span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title">Monthly Earning</h6>
+                            <span>₹<%= monthlyRevenue.toLocaleString() %></span>
+                            <span class="text-sm">Based on your local time.</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interval Selector -->
+
+            <div class="mb-3">
+                <label for="intervalSelector" class="form-label">Select Interval:</label>
+                <select id="intervalSelector" class="form-select">
+                    <option value="daily">Daily</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                </select>
+            </div>
+
+            <!-- Graph Section -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card mb-12">
+                            <article class="card-body">
+                                <canvas id="salesChartCanvas" height="100"></canvas>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+    </section>
+</main>
+
+<div class="container text-center mt-5">
+    <h3 class="text-center mb-10">Top Selling Products</h3>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8">
+            <article>
+                <% if (Array.isArray(topProductDetails) && topProductDetails.length > 0) { %>
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Product Image</th>
+                                <th scope="col">Product Name</th>
+                                <th scope="col">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% topProductDetails.forEach((product) => { %>
+                                <tr>
+                                    <td>
+                                        <img 
+                                         src="/static/uploads/<%= product.images[0].filename %>"
+                                            alt="<%= product.productName %>" 
+                                            class="product-image img-thumbnail" 
+                                            style="max-width: 50px; max-height: 50px;">
+                                    </td>
+                                    <td><h5> <%= product.productName%></h5></td>
+                                    <td><h5><%= product.category %></h5></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <p class="text-muted">No top-selling products available.</p>
+                <% } %>
+            </article>
+        </div>
+    </div>
+</div>
+
+
+
+    <%- include("../layout/admin/footer") %>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let myChart; // Declare myChart globally
+
+        // Fetch sales data based on the interval
+        async function fetchSalesData(interval) {
+            try {
+                console.log("Selected interval:", interval);
+                const response = await fetch(`/admin/sales-data?interval=${interval}`);
+
+                if (!response.ok) {
+                    console.error('Error fetching sales data. Server responded with:', response.status);
+                    throw new Error('Failed to fetch sales data');
+                }
+
+                const data = await response.json();
+                console.log("Fetched data:", data);
+                return data;
+            } catch (error) {
+                console.error('Error fetching sales data:', error.message);
+                throw error;
+            }
+        }
+
+        // Render or update the sales chart
+        async function renderSalesChart(interval) {
+            try {
+                const salesData = await fetchSalesData(interval);
+                console.log('Sales Data:', salesData);
+
+                const canvasElement = document.getElementById('salesChartCanvas');
+                if (!canvasElement) {
+                    console.error('Error: Canvas element with ID "salesChartCanvas" not found');
+                    return;
+                }
+                const ctx = canvasElement.getContext('2d');
+
+                if (myChart) {
+                    // Update existing chart
+                    myChart.data.labels = salesData.labels;
+                    myChart.data.datasets[0].data = salesData.values;
+                    myChart.update();
+                } else {
+                    // Create a new chart
+                    myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: salesData.labels,
+                            datasets: [{
+                                label: 'Total Sales',
+                                data: salesData.values,
+                                fill: true,
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                tension: 0.2,
+                            }],
+                        },
+                        options: {
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        usePointStyle: true,
+                                    },
+                                },
+                            },
+                        },
+                    });
+                }
+            } catch (error) {
+                console.error('Error rendering sales chart:', error.message);
+            }
+        }
+
+        // Handle interval selection change
+        function handleFilterChange() {
+            try {
+                const intervalSelector = document.getElementById('intervalSelector');
+                const selectedInterval = intervalSelector.value;
+
+                console.log("Selected interval changed:", selectedInterval);
+
+                if (!['daily', 'monthly', 'yearly'].includes(selectedInterval)) {
+                    console.error('Error: Invalid time interval');
+                    return;
+                }
+
+                renderSalesChart(selectedInterval);
+            } catch (error) {
+                console.error('Error handling filter change:', error.message);
+            }
+        }
+
+        // Attach event listener for the interval selector
+        const intervalSelector = document.getElementById('intervalSelector');
+        if (intervalSelector) {
+            intervalSelector.addEventListener('change', handleFilterChange);
+
+            // Render chart for the default interval
+            const defaultInterval = intervalSelector.options[0].value;
+            renderSalesChart(defaultInterval);
+        } else {
+            console.error('Error: Interval selector element not found');
+        }
+    });
+</script>

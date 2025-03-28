@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+
+  <style>
+    .otp-page {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f5f5f5; /* Optional: Change to your desired background color */
+    }
+    .otp-container {
+        max-width: 500px;
+        width: 100%;
+        padding: 30px;
+        background-color: #1e0b0b;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add a box shadow for a better look */
+    }
+  </style>
+  </head>
+  <body>
+  <section class="otp-page">
+    <div class="otp-container">
+        <div class="login_wrap widget-taber-content p-30 background-white border-radius-10">
+            <div class="padding_eight_all bg-white">
+                <div class="heading_s1">
+                    <h3 class="mb-30">OTP Verification</h3>
+                </div>
+                <p class="mb-30 font-sm">Please enter the OTP sent to your registered email or phone number.</p>
+                <form method="post" action="/checkOTPpass" id="otp-form">
+                  <% if (message !== undefined) { %>
+                    <p style="color: red; margin-bottom: 4px;"><%= message %></p>
+                   <% } %>
+                    <div class="form-group">
+                        <input type="text" required="" name="otp" placeholder="Enter OTP">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-fill-out btn-block hover-up" name="verify" id="verify-btn">Verify OTP</button>
+                    </div>
+                </form>
+                <div class="text-center mt-3">
+                    <span id="timer" class="text-muted">Time remaining: 01:00</span>
+                    <a class="text-muted" id="resend-otp-link" href="/resend-otp" style="display:none;">Resend OTP</a>
+                </div>
+            </div>
+        </div>
+    </div>
+  </section>
+</body>
+</html>
+
+
+
+<script>
+  const otpExpirationTime = 1 * 60; // 1 minute
+  let timeRemaining;
+  let timerInterval;
+
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  }
+
+  function updateTimer() {
+    const timerElement = document.getElementById('timer');
+    timerElement.textContent = `Time remaining: ${formatTime(timeRemaining)}`;
+    timeRemaining--;
+
+    if (timeRemaining < 0) {
+      clearInterval(timerInterval);
+      timerElement.textContent = "OTP expired. Please request a new one.";
+      document.getElementById('verify-btn').disabled = true;
+      document.getElementById('resend-otp-link').style.display = 'block';
+      localStorage.removeItem('otpExpireTime');
+    } else {
+      localStorage.setItem('otpExpireTime', Date.now() + timeRemaining * 1000);
+    }
+  }
+
+  function startTimer() {
+    const savedExpireTime = localStorage.getItem('otpExpireTime');
+    if (savedExpireTime) {
+      const currentTime = Date.now();
+      timeRemaining = Math.floor((savedExpireTime - currentTime) / 1000);
+      if (timeRemaining <= 0) {
+        timeRemaining = 0;
+      }
+    } else {
+      timeRemaining = otpExpirationTime;
+      localStorage.setItem('otpExpireTime', Date.now() + otpExpirationTime * 1000);
+    }
+
+    document.getElementById('verify-btn').disabled = false;
+    document.getElementById('resend-otp-link').style.display = 'none';
+    timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+  }
+
+  document.getElementById('resend-otp-link').addEventListener('click', function(event) {
+    event.preventDefault();
+    fetch('/resend-otp')
+      .then(response => {
+        if (response.ok) {
+          clearInterval(timerInterval);
+          localStorage.removeItem('otpExpireTime');
+          startTimer();
+        } else {
+          alert('Failed to resend OTP. Please try again.');
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  });
+
+  startTimer();
+</script>

@@ -1,0 +1,131 @@
+<%- include('../layout/user/header.ejs') %>
+<style>
+    .error-message {
+        margin-top: 5px;
+        font-size: 12px;
+        color: red;
+    }
+</style>
+<div class="col-md-6" style="margin-left: 25%">
+    <div class="mb-25">
+        <h4>Edit Address</h4>
+    </div>
+    <form id="editAddressForm" method="post" action="/updateAddress/<%= address._id %>">
+        <div class="form-group">
+            <input type="text" required="" name="firstName" value="<%= address.firstName %>" placeholder="First name *">
+        </div>
+        <div class="form-group">
+            <input type="text" required="" name="lastName" value="<%= address.lastName %>" placeholder="Last name *">
+        </div>
+        <div class="form-group">
+            <input required="" type="text" name="city" value="<%= address.city %>" placeholder="City / Town *">
+        </div>
+        <div class="form-group">
+            <input required="" type="text" name="streetAddress" value="<%= address.streetAddress %>" placeholder="Street Address *">
+        </div>
+        <div class="form-group">
+            <input required="" type="text" name="state" value="<%= address.state %>" placeholder="State / County *">
+        </div>
+        <div class="form-group">
+            <input required="" type="number" name="zipcode" value="<%= address.zipcode %>" placeholder="Postcode / ZIP *">
+        </div>
+        <div class="form-group">
+            <input required="" type="text" name="email" value="<%= address.email %>" placeholder="Email address *">
+        </div>
+        <div class="form-group">
+            <input required="" type="number" name="phone" value="<%= address.phone %>" placeholder="Phone *">
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-fill-out submit">Update Address</button>
+        </div>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('editAddressForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the form from submitting
+
+        let isValid = true;
+
+        // Clear previous errors
+        document.querySelectorAll('.error-message').forEach(el => el.remove());
+
+        // First Name validation
+        const firstName = document.querySelector('input[name="firstName"]');
+        if (!/^[a-zA-Z]+$/.test(firstName.value)) {
+            showError(firstName, "First name must contain only letters.");
+            isValid = false;
+        }
+
+        // Last Name validation
+        const lastName = document.querySelector('input[name="lastName"]');
+        if (!/^[a-zA-Z]+$/.test(lastName.value)) {
+            showError(lastName, "Last name must contain only letters.");
+            isValid = false;
+        }
+
+        // City/Town validation
+        const city = document.querySelector('input[name="city"]');
+        if (!/^[a-zA-Z\s]+$/.test(city.value)) {
+            showError(city, "City/Town must contain only letters.");
+            isValid = false;
+        }
+
+        // Street Address validation
+        const streetAddress = document.querySelector('input[name="streetAddress"]');
+        if (!/^[a-zA-Z0-9\s]+$/.test(streetAddress.value)) {
+            showError(streetAddress, "Street address must contain letters and numbers only.");
+            isValid = false;
+        }
+
+        // State/County validation
+        const state = document.querySelector('input[name="state"]');
+        if (!/^[a-zA-Z\s]+$/.test(state.value)) {
+            showError(state, "State/County must contain only letters.");
+            isValid = false;
+        }
+
+        // Postcode/ZIP validation
+        const zipcode = document.querySelector('input[name="zipcode"]');
+        if (!/^\d{6}$/.test(zipcode.value)) {
+            showError(zipcode, "Postcode/ZIP must be a 6-digit number.");
+            isValid = false;
+        }
+
+        // Email validation
+        const email = document.querySelector('input[name="email"]');
+        if (!/^\S+@\S+\.\S+$/.test(email.value)) {
+            showError(email, "Please enter a valid email address.");
+            isValid = false;
+        }
+
+        // Phone validation
+        const phone = document.querySelector('input[name="phone"]');
+        if (!/^\d{10}$/.test(phone.value)) {
+            showError(phone, "Phone number must be a 10-digit number.");
+            isValid = false;
+        }
+
+        if (isValid) {
+            // Show SweetAlert success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Address Updated Successfully!',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                // Submit the form after showing the SweetAlert
+                document.getElementById('editAddressForm').submit();
+            });
+        }
+    });
+
+    function showError(input, message) {
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message';
+        errorElement.textContent = message;
+        input.parentNode.insertBefore(errorElement, input.nextSibling);
+    }
+</script>
+<%- include('../layout/user/footer.ejs') %>

@@ -1,0 +1,104 @@
+<%- include('../layout/user/header.ejs') %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="card-header">
+  <h5>Account Details</h5>
+</div>
+<div class="card-body">
+  <!-- <p>Already have an account? <a href="page-login-register.html">Log in instead!</a></p> -->
+  <form id="editProfileForm" name="enq">
+    <div class="row">
+      <div class="form-group col-md-12">
+        <label>Display Name <span class="required">*</span></label>
+        <input required class="form-control square" name="name" type="text" pattern="[A-Za-z\s]+" title="Display Name can only contain letters and spaces" value="<%= users.name %>">
+        <span class="invalid-feedback">Display Name can only contain letters and spaces.</span>
+      </div>
+      <div class="form-group col-md-12">
+        <label>Email Address <span class="required">*</span></label>
+        <input required class="form-control square" name="email" type="email" title="Please enter a valid email address" value="<%= users.email %>">
+        <span class="invalid-feedback">Please enter a valid email address.</span>
+      </div>    
+      <div class="form-group col-md-12">
+        <label>Mobile <span class="required"></span></label>
+        <input required class="form-control square" name="mobile" type="text" pattern="\d{10}" title="Mobile number must be exactly 10 digits" value="<%= users.phonenumber %>">
+        <span class="invalid-feedback">Mobile number must be exactly 10 digits.</span>
+      </div>
+      <div class="col-md-12 d-flex">
+        <!-- Edit Password Link (Left-aligned) -->
+        <a href="/password-settings" class="btn btn-fill-out submit">
+            <i class="fi-rs-settings mr-10"></i> Edit Password
+        </a>
+    
+        <!-- Save Changes Button with adjustable margin -->
+        <button type="submit" class="btn btn-fill-out submit ml-5" name="submit">
+            Save changes
+        </button>
+    </div>
+    
+    
+    
+   
+  
+  </form>     
+</div>
+
+<%- include('../layout/user/footer.ejs') %>
+
+<script>
+  document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const isValid = form.checkValidity();
+  const invalidFeedbacks = form.querySelectorAll('.invalid-feedback');
+
+  // Clear previous error messages
+  invalidFeedbacks.forEach(feedback => feedback.style.display = 'none');
+
+  if (!isValid) {
+    // Display custom error messages
+    const inputs = form.querySelectorAll('input');
+    inputs.forEach(input => {
+      if (!input.validity.valid) {
+        const feedback = input.nextElementSibling;
+        if (feedback && feedback.classList.contains('invalid-feedback')) {
+          feedback.style.display = 'block';
+        }
+      }
+    });
+    return;
+  }
+
+  const formData = new FormData(form);
+  const formObject = {};
+  formData.forEach((value, key) => formObject[key] = value);
+
+  try {
+    const response = await fetch('/edit-profile/<%= users._id %>', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formObject)
+    });
+
+    if (response.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Profile Updated',
+        text: 'Your profile has been updated successfully!',
+        showConfirmButton: false,
+        timer: 1500
+      }).then(() => {
+        window.location.href = '/myAccount';
+      });
+    } else {
+      throw new Error('Failed to update profile');
+    }
+  } catch (error) {
+    alert('An error occurred while updating your profile. Please try again.');
+  }
+});
+
+
+</script>

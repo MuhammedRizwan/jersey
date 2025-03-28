@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Sign Up</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/static/assetsf/imgs/theme/favicon.svg">
+    <!-- Template CSS -->
+    <link rel="stylesheet" type="text/css" href="/static/assetsf/css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <section class="pt-150 pb-150 d-flex justify-content-center align-items-center" style="min-height: 100vh">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="login_wrap widget-taber-content p-30 background-white border-radius-5">
+                        <div class="padding_eight_all bg-white">
+                            <form action="/signUp" method="post" id="signupForm">
+                                <h3>Sign Up</h3>
+                                <label for="name">Username</label>
+                                <input type="text" placeholder="User name" id="name" name="name">
+                                <small id="nameError" class="text-danger"></small>
+
+                                <label for="email">Email</label>
+                                <input type="text" placeholder="Enter Email" id="email" name="email">
+                                <small id="emailError" class="text-danger"></small>
+
+                                <label for="phonenumber">Mobile No</label>
+                                <input type="text" placeholder="Enter Mobile No" id="phonenumber" name="phonenumber">
+                                <small id="phonenumberError" class="text-danger"></small>
+
+                                <label for="password">Password</label>
+                                <input type="password" placeholder="Password" id="password" name="password">
+                                <small id="passwordError" class="text-danger"></small>
+
+                                <label for="confirmpassword">Confirm Password</label>
+                                <input type="password" placeholder="Confirm Password" id="confirmpassword" name="confirmpassword">
+                                <small id="confirmpasswordError" class="text-danger"></small><br>
+
+                                <button class="btn btn-success bt-lg" id="submitBtn" type="submit">Sign Up</button>
+                                <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-center mt-5">
+                                    <p class="text-secondary text-decoration-none">Already have an account?</p>
+                                    <a href="/login" class="link-primary text-decoration-none">Log in</a>
+                                </div>
+                            </form>
+                            <div class="divider-text-center mt-15 mb-15">
+                                <span> or</span>
+                            </div>
+                            <ul class="btn-login list_none text-center mb-15">
+                                <li><a href="/auth/google" class="btn btn-google hover-up">Login With Google</a></li>
+                            </ul>
+                            <div class="text-muted text-center">Already have an account? <a href="#">Sign in now</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function removeErrorMessage(element) {
+            setTimeout(() => {
+                element.textContent = '';
+            }, 4000);
+        }
+
+        function showError(element, message) {
+            element.textContent = message;
+            removeErrorMessage(element);
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phonenumber = document.getElementById('phonenumber').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const confirmpassword = document.getElementById('confirmpassword').value.trim();
+
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            const phonenumberError = document.getElementById('phonenumberError');
+            const passwordError = document.getElementById('passwordError');
+            const confirmpasswordError = document.getElementById('confirmpasswordError');
+
+            let isValid = true;
+
+            // Username validation
+            if (name.length < 5) {
+                showError(nameError, 'Username must have at least 5 characters');
+                isValid = false;
+            }
+
+            // Email validation
+            if (!validateEmail(email)) {
+                showError(emailError, 'Enter a valid email');
+                isValid = false;
+            }
+
+            // Mobile number validation
+            if (!/^\d{10}$/.test(phonenumber)) {
+                showError(phonenumberError, 'Mobile number must be 10 digits and contain no spaces');
+                isValid = false;
+            }
+
+            // Password validation
+            if (password.length < 5) {
+                showError(passwordError, 'Password must have at least 5 characters');
+                isValid = false;
+            }
+
+            // Confirm password validation
+            if (password !== confirmpassword) {
+                showError(confirmpasswordError, 'Passwords do not match');
+                isValid = false;
+            }
+
+            if (isValid) {
+                const formData = {
+                    name,
+                    phonenumber,
+                    email,
+                    password,
+                    confirmpassword
+                };
+
+                const response = await fetch('/signUp', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: "Otp sent to your mail",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        customClass: {
+                            title: 'swal'
+                        }
+                    });
+                    setTimeout(() => {
+                        window.location.href = '/otp-verification';
+                    }, 2500);
+                } else if (result.status === 'error') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: result.message,
+                        showConfirmButton: true,
+                        timer: 2000,
+                        customClass: {
+                            title: 'swal'
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: result.message,
+                        showConfirmButton: false,
+                        timer: 4000,
+                        customClass: {
+                            title: 'swal'
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

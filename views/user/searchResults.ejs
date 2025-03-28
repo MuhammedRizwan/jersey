@@ -1,0 +1,88 @@
+<%- include('../layout/user/header.ejs') %>
+
+<main class="main">
+    <section class="search-results pt-50">
+        <div class="container">
+            <h2>Search Results for "<%= searchProduct %>"</h2>
+
+            <!-- Category Filter Form -->
+            <form method="GET" action="/search">
+                <input type="hidden" name="q" value="<%= searchProduct %>"> <!-- Keep the search query -->
+
+                <label for="categoryFilter">Filter by Category:</label>
+                <select id="categoryFilter" name="category" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    <% categories.forEach(cat => { %>
+                      <option value="<%= cat._id %>" <%= selectedCategory == cat._id ? 'selected' : '' %>>
+                        <%= cat.name %>
+                      </option>
+                    <% }) %>
+                  </select>
+                  
+            </form>
+
+            <% if (product.length > 0) { %>
+                <!-- Render your products here -->
+                <ul>
+                  <% product.forEach(prod => { %>
+                    <li><%= prod.productName %> - <%= prod.category.name %></li>
+                  <% }) %>
+                </ul>
+              <% } else { %>
+                <p>No products found for "<%= searchProduct %>".</p>
+              <% } %>
+ 
+            
+            <div class="row gx-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 row-cols-xxl-5">
+                <% if (product && product.length > 0) { %>
+                    <% product.forEach(item => { %>
+                        <!-- Product Card -->
+                        <div class="col">
+                            <div class="product-cart-wrap mb-30">
+                                <div class="product-img-action-wrap">
+                                    <div class="product-img product-img-zoom">
+                                        <a href="/productDetail/<%= item._id %>">
+                                            <img class="default-img" src="/static/uploads/<%= item.images[0].filename %>" alt="<%= item.productName %>">
+                                            <% if (item.images && item.images.length > 0) { %>
+                                                <img class="hover-img" src="/static/uploads/<%= item.images[0].filename %>" alt="<%= item.productName %>">
+                                            <% } %>
+                                        </a>
+                                    </div>
+                                    <div class="product-action-1">
+                                        <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
+                                        <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                        <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                    </div>
+                                    <div class="product-badges product-badges-position product-badges-mrg">
+                                        <span class="hot">Hot</span>
+                                    </div>
+                                </div>
+                                <div class="product-content-wrap">
+                                    <h2><%= item.productName %></h2>
+                                    <div class="rating-result" title="90%">
+                                        <span><span>90%</span></span>
+                                    </div>
+                                    <div class="product-price">
+                                        <span>₹ <%= item.salesPrice %> </span>
+                                        <span class="old-price">₹ <%= item.regularPrice %></span>
+                                    </div>
+                                    <div class="product-action-1 show">
+                                        <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                    </div>
+                                    <div class="product-info-extra">
+                                        <p><strong>Category:</strong> <%= item?.category?.name %></p>
+                                        <p><strong>Stock:</strong> <%= item.quantity %></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p>No products found for "<%= searchProduct %>".</p>
+                <% } %>
+            </div>
+        </div>
+    </section>
+</main>
+
+<%- include('../layout/user/footer.ejs') %>

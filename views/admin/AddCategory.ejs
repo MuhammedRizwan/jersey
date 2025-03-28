@@ -1,0 +1,121 @@
+<%- include('../layout/admin/header.ejs') %>
+
+<div class="container">
+  <div class="row justify-content-center align-items-center" style="height: 100vh;">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <header class="card-header">
+            <h4 class="card-title">Add Category</h4>
+            <div id="message" class="text-center error m-b-16"></div>
+          </header>
+          <div class="col-md-12" id="categoryTable">
+            <form id="myForm" novalidate>
+              <div class="mb-10">
+                <label class="form-label">Category Name</label>
+                <input name="categoryName" id="categoryName" type="text" placeholder="Type here" class="form-control" required>
+                <div id="categoryNameError" class="text-danger"></div>
+              </div>
+
+              <label class="form-label">List/Unlist</label>
+              <div class="mb-2 form-check form-check-inline" style="width: 45%;">
+                <input class="form-check-input" checked="" name="list-unlist" value="list" type="radio" required>
+                <span class="form-check-label"> List </span>
+              </div>
+              <div class="mb-2 form-check form-check-inline" style="width: 45%;">
+                <input class="form-check-input" name="list-unlist" value="unlist" type="radio" required>
+                <span class="form-check-label"> Unlist </span>
+              </div>
+              <div id="listUnlistError" class="text-danger"></div>
+
+              <div>
+                <button type="submit" class="btn btn-md rounded font-sm hover-up" style="width: 100%;">Add New Category</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../layout/admin/footer.ejs') %>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+  $('#myForm').on('submit', function(e) {
+    e.preventDefault();
+    addNewCategory();
+  });
+
+  function addNewCategory() {
+    // Clear previous error messages
+    $('#categoryNameError').text('');
+    $('#listUnlistError').text('');
+    $('#message').text('');
+
+    const categoryName = $('#categoryName').val().trim();
+    const listUnlist = $('input[name="list-unlist"]:checked').val();
+
+    let isValid = true;
+
+    // Validate category name
+    if (!categoryName) {
+      $('#categoryNameError').text('Category name is required!');
+      setTimeout(() => $('#categoryNameError').text(''), 3000);
+      isValid = false;
+    } else if (!/^[a-zA-Z\s]+$/.test(categoryName)) {
+      $('#categoryNameError').text('Category name should contain only letters and spaces.');
+      setTimeout(() => $('#categoryNameError').text(''), 3000);
+      isValid = false;
+    } else if (categoryName.length === 0) {
+      $('#categoryNameError').text('Category name cannot be empty or just spaces.');
+      setTimeout(() => $('#categoryNameError').text(''), 3000);
+      isValid = false;
+    }
+
+    if (!listUnlist) {
+      $('#listUnlistError').text('Please select List or Unlist option!');
+      setTimeout(() => $('#listUnlistError').text(''), 3000);
+      isValid = false;
+    }
+
+    if (!isValid) {
+      return;
+    }
+
+    $.ajax({
+      url: '/admin/addcategories',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ categoryName, listUnlist }),
+      success: function(response) {
+        if(response.success){
+          Swal.fire({
+            icon: 'success',
+            title: 'Category added successfully',
+            showConfirmButton: false,
+            timer: 1500
+          }).then(() => {
+            window.location.href = '/admin/categories';
+          });
+        } else {
+          $('#message').text(response.message || 'An error occurred while adding the category.')
+                       .removeClass('text-success').addClass('text-danger');
+          if (response.message === 'Category name already exists!') {
+            $('#categoryNameError').text(response.message);
+            setTimeout(() => $('#categoryNameError').text(''), 3000);
+          }
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error('AJAX Error:', xhr.responseText);
+        $('#message').text('An error occurred: ' + xhr.responseText).removeClass('text-success').addClass('text-danger');
+        setTimeout(() => $('#message').text(''), 3000);
+      }
+    });
+  }
+});
+</script>

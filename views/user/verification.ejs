@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification</title>
+  <!-- Link to Google Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <!-- Link to Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- Stylesheet -->
+  <style>
+    *,
+    *:before,
+    *:after {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+   
+
+
+   
+
+    .shape:first-child {
+      background: linear-gradient(#1845ad, #23a2f6);
+      left: -80px;
+      top: -80px;
+    }
+
+    .shape:last-child {
+      background: linear-gradient(to right, #ff512f, #f09819);
+      right: -30px;
+      bottom: -80px;
+    }
+
+    form {
+      height: 360px;
+      width: 300px;
+      background-color: rgba(255, 255, 255, 0.13);
+      position: absolute;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 40px rgba(51, 39, 137, 0.6);
+      padding: 50px 35px;
+    }
+
+    form h2 {
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 32px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    input {
+      display: block;
+      height: 40px;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.07);
+      border-radius: 3px;
+      padding: 0 10px;
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 300;
+      color: #0b0202;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    ::placeholder {
+      color: #e5e5e5;
+    }
+
+    button {
+      margin-top: 30px;
+      width: 100%;
+      background-color: #b4acb7;
+      color: #080710;
+      padding: 12px 0;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+  
+  <form action="/otp-verification" method="post" id="otpForm">
+    <h2>Enter OTP</h2>
+    <label for="otp">OTP:</label>
+    <input type="text" class="form-control" name="enteredOtp" id="enteredOTP"  placeholder="Enter OTP" maxlength="6" required>
+    <button class="btn btn-success" type="submit" id="Verify">Verify</button>
+  </form>
+
+  <form method="post" action="/verify-otp" id="resentOtpForm">
+    <h2>Enter OTP</h2>
+    <label for="resend-otp">OTP:</label>
+    <input type="text" id="resend-otp" name="otp" required>
+    <button type="submit">Verify</button>
+    <p class="resend text-muted mb-0">
+      Didn't receive code? <button id="resend-now" style="text-decoration: none; border: none; color: green; background-color: #f0ecec;" type="button">Resend Now</button>
+    </p>
+  </form>
+  <script>
+var isRunning = false;
+var countdownInterval;
+
+function startCountdown() {
+  const countdownTime = 30;
+  if (isRunning) {
+    return;
+  }
+  let seconds = countdownTime;
+  document.getElementById('resend-now').textContent = seconds;
+  countdownInterval = setInterval(() => {
+    isRunning = true;
+    seconds--;
+    document.getElementById('resend-now').textContent = seconds;
+    if (seconds === 0) {
+      clearInterval(countdownInterval);
+      isRunning = false;
+      document.getElementById('resend-now').textContent = "Resend Now";
+    }
+  }, 1000);
+}
+
+window.onload = startCountdown;
+
+function countdownHandler(event) {
+  event.preventDefault();
+  startCountdown();
+  resendOtp()
+}
+
+document.getElementById('resend-now').addEventListener('click', countdownHandler);
+
+async function resendOtp() {
+  try {
+    const response = await fetch('/otp-verification/resent-otp', { method: 'post' });
+    const data = await response.json();
+    if (!data.success) {
+      console.log('Error occurred, resend failed:', data.message);
+    }
+  } catch (error) {
+    console.error('An error occurred during resend:', error.message);
+  }
+}
+
+  </script>
+<script>
+  document.getElementById('otpForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = {
+      enteredOtp: event.currentTarget.enteredOtp.value,
+    };
+    try {
+      const response = await fetch('/otp-verification', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        Swal.fire({
+          icon: 'success',
+          title: result.message,
+          showConfirmButton: false,
+          timer: 2000,
+          customClass: {
+            title: 'swal'
+          }
+        });
+        setTimeout(() => {
+          window.location.href = '/home';
+        }, 2500);
+      } else if (result.status === 'error') {
+        Swal.fire({
+          icon: 'error',
+          title: result.message,
+          showConfirmButton: true,
+          timer: 2000,
+          customClass: {
+            title: 'swal'
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: 'info',
+          title: result.message,
+          showConfirmButton: false,
+          timer: 4000,
+          customClass: {
+            title: 'swal'
+          }
+        });
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      // Handle error appropriately
+    }
+  });
+</script>
+
+</body>
+
+</html>

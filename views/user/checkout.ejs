@@ -1,0 +1,849 @@
+<%- include('../layout/user/header.ejs') %>
+
+    <body>
+        <style>
+            .small-radio {
+                width: 18px;
+                height: 18px;
+                margin-left: auto;
+            }
+        </style>
+
+        <div class="mobile-header-active mobile-header-wrapper-style">
+            <div class="mobile-header-wrapper-inner">
+                <div class="mobile-header-top">
+                    <div class="mobile-header-logo">
+                        <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo"></a>
+                    </div>
+                    <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
+                        <button class="close-style search-close">
+                            <i class="icon-top"></i>
+                            <i class="icon-bottom"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mobile-header-content-area">
+                    <div class="mobile-search search-style-3 mobile-header-border">
+                        <form action="#">
+                            <input type="text" placeholder="Search for items…">
+                            <button type="submit"><i class="fi-rs-search"></i></button>
+                        </form>
+                    </div>
+                    <div class="mobile-menu-wrap mobile-header-border">
+                        <div class="main-categori-wrap mobile-header-border">
+                            <a class="categori-button-active-2" href="#">
+                                <span class="fi-rs-apps"></span> Browse Categories
+                            </a>
+                            <div class="categori-dropdown-wrap categori-dropdown-active-small">
+                                <ul>
+                                    <li><a href="shop-grid-right.html"><i class="evara-font-dress"></i>Women's
+                                            Clothing</a></li>
+                                    <li><a href="shop-grid-right.html"><i class="evara-font-tshirt"></i>Men's
+                                            Clothing</a></li>
+                                    <li> <a href="shop-grid-right.html"><i class="evara-font-smartphone"></i>
+                                            Cellphones</a></li>
+                                    <li><a href="shop-grid-right.html"><i class="evara-font-desktop"></i>Computer &
+                                            Office</a></li>
+                                    <li><a href="shop-grid-right.html"><i class="evara-font-cpu"></i>Consumer
+                                            Electronics</a></li>
+                                    <li><a href="shop-grid-right.html"><i class="evara-font-home"></i>Home & Garden</a>
+                                    </li>
+                                    <li><a href="shop-grid-right.html"><i class="evara-font-high-heels"></i>Shoes</a>
+                                    </li>
+                                    <li><a href="shop-grid-right.html"><i class="evara-font-teddy-bear"></i>Mother &
+                                            Kids</a></li>
+                                    <li><a href="shop-grid-right.html"><i class="evara-font-kite"></i>Outdoor fun</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- mobile menu start -->
+                        <nav>
+                            <ul class="mobile-menu">
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
+                                        href="index.html">Home</a>
+                                    <ul class="dropdown">
+                                        <li><a href="index.html">Home 1</a></li>
+                                        <li><a href="index-2.html">Home 2</a></li>
+                                        <li><a href="index-3.html">Home 3</a></li>
+                                        <li><a href="index-4.html">Home 4</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
+                                        href="shop-grid-right.html">shop</a>
+                                    <ul class="dropdown">
+                                        <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
+                                        <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
+                                        <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
+                                        <li><a href="shop-list-left.html">Shop List – Left Sidebar</a></li>
+                                        <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
+                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a
+                                                href="#">Single Product</a>
+                                            <ul class="dropdown">
+                                                <li><a href="shop-product-right.html">Product – Right Sidebar</a></li>
+                                                <li><a href="shop-product-left.html">Product – Left Sidebar</a></li>
+                                                <li><a href="shop-product-full.html">Product – No sidebar</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="shop-filter.html">Shop – Filter</a></li>
+                                        <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
+                                        <li><a href="shop-cart.html">Shop – Cart</a></li>
+                                        <li><a href="shop-checkout.html">Shop – Checkout</a></li>
+                                        <li><a href="shop-compare.html">Shop – Compare</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Mega
+                                        menu</a>
+                                    <ul class="dropdown">
+                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a
+                                                href="#">Women's Fashion</a>
+                                            <ul class="dropdown">
+                                                <li><a href="shop-product-right.html">Dresses</a></li>
+                                                <li><a href="shop-product-right.html">Blouses & Shirts</a></li>
+                                                <li><a href="shop-product-right.html">Hoodies & Sweatshirts</a></li>
+                                                <li><a href="shop-product-right.html">Women's Sets</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a
+                                                href="#">Men's Fashion</a>
+                                            <ul class="dropdown">
+                                                <li><a href="shop-product-right.html">Jackets</a></li>
+                                                <li><a href="shop-product-right.html">Casual Faux Leather</a></li>
+                                                <li><a href="shop-product-right.html">Genuine Leather</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a
+                                                href="#">Technology</a>
+                                            <ul class="dropdown">
+                                                <li><a href="shop-product-right.html">Gaming Laptops</a></li>
+                                                <li><a href="shop-product-right.html">Ultraslim Laptops</a></li>
+                                                <li><a href="shop-product-right.html">Tablets</a></li>
+                                                <li><a href="shop-product-right.html">Laptop Accessories</a></li>
+                                                <li><a href="shop-product-right.html">Tablet Accessories</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
+                                        href="blog-category-fullwidth.html">Blog</a>
+                                    <ul class="dropdown">
+                                        <li><a href="blog-category-grid.html">Blog Category Grid</a></li>
+                                        <li><a href="blog-category-list.html">Blog Category List</a></li>
+                                        <li><a href="blog-category-big.html">Blog Category Big</a></li>
+                                        <li><a href="blog-category-fullwidth.html">Blog Category Wide</a></li>
+                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a
+                                                href="#">Single Product Layout</a>
+                                            <ul class="dropdown">
+                                                <li><a href="blog-post-left.html">Left Sidebar</a></li>
+                                                <li><a href="blog-post-right.html">Right Sidebar</a></li>
+                                                <li><a href="blog-post-fullwidth.html">No Sidebar</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
+                                        href="#">Pages</a>
+                                    <ul class="dropdown">
+                                        <li><a href="page-about.html">About Us</a></li>
+                                        <li><a href="page-contact.html">Contact</a></li>
+                                        <li><a href="page-account.html">My Account</a></li>
+                                        <li><a href="page-login-register.html">login/register</a></li>
+                                        <li><a href="page-purchase-guide.html">Purchase Guide</a></li>
+                                        <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
+                                        <li><a href="page-terms.html">Terms of Service</a></li>
+                                        <li><a href="page-404.html">404 Page</a></li>
+                                    </ul>
+                                </li>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a
+                                        href="#">Language</a>
+                                    <ul class="dropdown">
+                                        <li><a href="#">English</a></li>
+                                        <li><a href="#">French</a></li>
+                                        <li><a href="#">German</a></li>
+                                        <li><a href="#">Spanish</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+                        <!-- mobile menu end -->
+                    </div>
+                    <div class="mobile-header-info-wrap mobile-header-border">
+                        <div class="single-mobile-header-info mt-30">
+                            <a href="page-contact.html"> Our location </a>
+                        </div>
+                        <div class="single-mobile-header-info">
+                            <a href="page-login-register.html">Log In / Sign Up </a>
+                        </div>
+                        <div class="single-mobile-header-info">
+                            <a href="#">(+01) - 2345 - 6789 </a>
+                        </div>
+                    </div>
+                    <div class="mobile-social-icon">
+                        <h5 class="mb-15 text-grey-4">Follow Us</h5>
+                        <a href="#"><img src="assets/imgs/theme/icons/icon-facebook.svg" alt=""></a>
+                        <a href="#"><img src="assets/imgs/theme/icons/icon-twitter.svg" alt=""></a>
+                        <a href="#"><img src="assets/imgs/theme/icons/icon-instagram.svg" alt=""></a>
+                        <a href="#"><img src="assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
+                        <a href="#"><img src="assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <main class="main">
+            <div class="page-header breadcrumb-wrap">
+                <div class="container">
+                    <div class="breadcrumb">
+                        <a href="index.html" rel="nofollow">Home</a>
+                        <span></span> Shop
+                        <span></span> Checkout
+                    </div>
+                </div>
+            </div>
+            <section class="mt-50 mb-50">
+                <form id="orderFormData">
+                    <div class="container">
+                        <div class="row">
+                            <div class="row d-flex">
+                                <div class="col-lg-6 order-lg-1">
+                                    <div class="order_review">
+                                        <div class="mb-20">
+                                            <h4>Your Orders</h4>
+                                        </div>
+                                        <div class="table-responsive order_table text-center">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2">Product</th>
+                                                        <th>Quantity</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% cart.forEach(cartItem=> { %>
+                                                        <% const product=productsMap[cartItem.product_id]; %>
+                                                            <% if (product) { %>
+                                                                <tr>
+                                                                    <td class="image product-thumbnail">
+                                                                        <img src="/uploads/<%= product.images[0]?.filename %>"
+                                                                            alt="<%= product.productName %>" width="70">
+                                                                    </td>
+                                                                    <td>
+                                                                        <h5><a href="/product/<%= product._id %>">
+                                                                                <%= product.productName %>
+                                                                            </a></h5>
+                                                                        <p>Size: <%= cartItem.size %>
+                                                                        </p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span class="product-qty">x <%=
+                                                                                cartItem.quantity %></span>
+                                                                    </td>
+                                                                    <td>₹<%= (product.salesPrice *
+                                                                            cartItem.quantity).toFixed(2) %>
+                                                                    </td>
+                                                                </tr>
+                                                                <% } %>
+                                                                    <% }); %>
+
+                                                                        <!-- SubTotal -->
+                                                                        <tr>
+                                                                            <th>SubTotal</th>
+                                                                            <td colspan="3" id="total"
+                                                                                class="font-lg fw-900 text-brand product-subtotal">
+                                                                                ₹<%= cartTotal.toFixed(2) %>
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <!-- Coupon Discount -->
+                                                                        <tr>
+                                                                            <th>Coupon Discount</th>
+                                                                            <td colspan="3">
+                                                                                <em id="couponDiscount"
+                                                                                    class="font-lg fw-900 text-brand">₹0.00</em>
+                                                                            </td>
+                                                                        </tr>
+
+                                                                        <!-- Total -->
+                                                                        <tr>
+                                                                            <th>Total</th>
+                                                                            <td colspan="3" class="product-subtotal">
+                                                                                <span id="checkoutTotal"
+                                                                                    class="font-xl text-brand fw-900">₹
+                                                                                    <%= cartTotal.toFixed(2) %></span>
+                                                                            </td>
+                                                                        </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Payment Options -->
+                                    <div class="payment_method">
+                                        <div class="mb-25">
+                                            <h5>Payment</h5>
+                                        </div>
+                                        <div class="payment_option">
+                                            <div class="custome-radio">
+                                                <input class="form-check-input" type="radio" name="payment_option"
+                                                    id="checkPayment" value="Razorpay">
+                                                <label class="form-check-label" for="checkPayment">Razorpay</label>
+                                            </div>
+                                            <div class="custome-radio">
+                                                <input class="form-check-input" type="radio" name="payment_option"
+                                                    id="cod" value="Cash on Delivery" checked>
+                                                <label class="form-check-label" for="cod">Cash On Delivery</label>
+                                            </div>
+                                            <div class="custome-radio">
+                                                <input class="form-check-input" type="radio" name="payment_option"
+                                                    id="wallet" value="Wallet">
+                                                <label class="form-check-label" for="wallet">Wallet</label>
+                                            </div>
+                                        </div>
+                                        <a id="checkout" class="btn btn-fill-out btn-block mt-30"
+                                            onclick="checkout('<%= addresses.length %>', '<%= cart.length %>')">Place
+                                            Order</a>
+                                    </div>
+                                </div>
+
+                                <!-- Address Section on the Right -->
+                                <div class="col-lg-6 order-lg-2">
+                                    <div class="tab-pane fade show active" id="address" role="tabpanel"
+                                        aria-labelledby="address-tab">
+                                        <div class="row">
+                                            <% addresses.forEach(function(address) { %>
+                                                <div class="col-lg-12">
+                                                    <div class="card mb-3">
+                                                        <div
+                                                            class="card-header d-flex justify-content-between align-items-center">
+                                                            <h5 class="mb-0">
+                                                                <%= address.isBilling ? "Billing Address"
+                                                                    : "Shipping Address" %>
+                                                            </h5>
+                                                            <input type="radio" id="address_<%= address._id %>"
+                                                                name="address" value="<%= address._id %>"
+                                                                class="form-check-input small-radio">
+                                                            <h6> Select Address</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <address>
+                                                                <h6>First Name: <%= address.firstName %>
+                                                                </h6>
+                                                                <h6>Last Name: <%= address.lastName %>
+                                                                </h6>
+                                                                <h6>City: <%= address.city %>
+                                                                </h6>
+                                                                <h6>Street Address: <%= address.streetAddress %>
+                                                                </h6>
+                                                                <h6>State: <%= address.state %>
+                                                                </h6>
+                                                                <h6>Zipcode: <%= address.zipcode %>
+                                                                </h6>
+                                                                <h6>Phone: <%= address.phone %>
+                                                                </h6>
+                                                                <h6>Email: <%= address.email %>
+                                                                </h6>
+                                                            </address>
+                                                            <a href="/editAddress/<%= address._id %>"
+                                                                class="btn-small">Edit</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <% }); %>
+                                        </div>
+                                        <div class="col-md-12 text-center">
+                                            <a href="/add-address/<%= user_id %>" class="btn btn-fill-out submit">Add
+                                                Address</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="divider mt-50 mb-50"></div>
+                                </div>
+                            </div>
+                            <!-- Coupon Code Input -->
+                            <div class="col-lg-6 mb-sm-15">
+                                <div class="form-group">
+                                    <label for="couponCode">Coupon Code:</label>
+                                    <div class="input-group-append">
+                                        <input type="text" id="couponCode" style="width: 190px; height: 45px;"
+                                            name="couponCode" placeholder="Coupon code">
+                                        <span>
+                                            <a class="btn btn-warning" onclick="applyCoupon()">Apply</a>
+                                        </span>
+                                    </div>
+                                    <p id="couponError" class="text-danger"></p>
+                                </div>
+                            </div>
+                        </div>
+                </form>
+            </section>
+
+        </main>
+
+
+        <section class="coupon-section mt-30">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-20">
+                            <h4>Available Coupons</h4>
+                        </div>
+                        <!-- Button to show the coupon modal -->
+                        <button id="showCouponModal" type="button" class="btn btn-info" data-bs-toggle="modal"
+                            data-bs-target="#couponModal">Show Available Coupons</button>
+
+                        <!-- Coupon Modal -->
+                        <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="couponModalLabel">Exclusive Offer</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <% for (let i=0; i < coupons.length; i++) { %>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Awesome Deal</h5>
+                                                    <p class="card-text">COUPON NAME: <%= coupons[i].name %>
+                                                    </p>
+                                                    <p class="card-text">Expires on: <%=
+                                                            coupons[i].expiryDate.toLocaleDateString() %>
+                                                    </p>
+                                                    <p class="card-text">Use code: <%= coupons[i].code %>
+                                                    </p>
+                                                    <p class="card-text">Offer: <%= coupons[i].discount %>%</p>
+                                                    <p class="card-text">Only Apply for Price Range:<%=
+                                                            coupons[i].minimumAmount %> To <%= coupons[i].maximumAmount
+                                                                %>
+                                                    </p>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <!-- <button class="btn btn-success copyCouponBtn" data-coupon-code="<%= coupons[i].code %>">
+                                  Copy Coupon Code
+                                </button> -->
+                                                    <input type="text" class="copyInput" value="<%= coupons[i].code %>"
+                                                        style="position: absolute; left: -9999px;">
+                                                </div>
+                                            </div>
+                                            <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+
+
+
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> -->
+
+
+        <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
+
+        <script>
+            // Function to extract numeric value from a string
+            function extractNumericValue(str) {
+                const numericString = str.replace(/[^0-9.]+/g, "");  // Remove non-numeric characters
+                return parseFloat(numericString);
+            }
+
+            // Function to handle the checkout process
+            function checkout(addressLength, cartLength) {
+                const hasAddress = addressLength > 0;
+                const hasCart = cartLength > 0;
+
+                const razorpayOption = document.getElementById("checkPayment");
+                const codOption = document.getElementById("cod");
+                const walletOption = document.getElementById("wallet");
+
+                if (!hasCart) {
+                    invalidCart();
+                } else if (!hasAddress) {
+                    invalidAddress();
+                } else {
+                    // Check if an address is selected
+                    const selectedAddress = document.querySelector('input[name="address"]:checked');
+                    if (!selectedAddress) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Please select a delivery address!",
+                        });
+                        return;
+                    }
+                    const paymentMethod = razorpayOption.checked ? "Razorpay" :
+                        codOption.checked ? "CashOnDelivery" :
+                            walletOption.checked ? "Wallet" : "";
+
+                    if (!paymentMethod) {
+                        alert("Please select a payment method.");
+                        return;
+                    }
+
+                    if (paymentMethod === "Razorpay") {
+                        sendRazorpayRequest();
+                    } else if (paymentMethod === "CashOnDelivery") {
+                        sendCashOnDeliveryRequest();
+                    } else if (paymentMethod === "Wallet") {
+                        sendWalletRequest();
+                    }
+                }
+            }
+
+            // Wallet Payment Request
+            // Wallet Payment Request
+            function sendWalletRequest() {
+                const totalPriceElement = document.getElementById("total").innerText;
+                const total = extractNumericValue(totalPriceElement);
+
+
+                // Get the selected address ID from the form (just like in COD)
+                const addressId = document.querySelector('input[name="address"]:checked').value;
+
+                // Check if an address is selected
+                if (!addressId) {
+                    alert("Please select an address.");
+                    return;
+                }
+
+                // // Ensure you send the correct product _id from your database
+                // const products = [
+                //     { productId: "606c3f1fcf1e5a3b0414d2f5", quantity: 2, price: 500 } // Replace this with actual ObjectId
+                // ];
+
+                // Log the data before sending
+                console.log({
+                    totalPrice: total,
+                    addressId: addressId,
+                    paymentMethod: "Wallet",
+                });
+
+                //     $.ajax({
+                //         url: "/checkout/wallet-payment",
+                //         type: "POST",
+                //         contentType: "application/json",
+                //         data: JSON.stringify({
+                //             totalPrice: total,
+                //             addressId: addressId,
+                //             paymentMethod: "Wallet",
+                //         }),
+                //         success: function (data) {
+                //             console.log("MESSAGE", data);
+                //             if (data.success) {
+                //                 window.location.href = "/success-page";
+                //             } else {
+                //                 alert(data.message);
+                //             }
+                //         },
+                //         error: function (jqXHR, textStatus, errorThrown) {
+                //             console.error("Error details:", {
+                //                 status: jqXHR.status,
+                //                 statusText: jqXHR.statusText,
+                //                 responseText: jqXHR.responseText,
+                //                 textStatus: textStatus,
+                //                 errorThrown: errorThrown
+                //             });
+                //             alert("Error processing wallet payment.");
+                //         }
+                //     });
+                // }
+
+
+
+                $.ajax({
+                    url: "/checkout/wallet-payment",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        totalPrice: total,
+                        addressId: addressId,
+                        paymentMethod: "Wallet",
+                    }),
+                    success: function (data) {
+                        if (data.success) {
+                            // Show success SweetAlert
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Order Placed',
+                                text: 'Your wallet  Delivery order has been placed successfully!',
+                            }).then(() => {
+                                // Redirect to success page after user closes the alert
+                                window.location.href = "/success-page";
+                            });
+                        } else {
+                            alert("Error processing wallet Delivery request.");
+                        }
+                    },
+                    error: function (error) {
+                        alert("Error: " + error.responseText || "Unknown error.");
+                    },
+                });
+            }
+
+
+
+
+
+
+
+
+
+            // Razorpay Payment Request
+            function sendRazorpayRequest() {
+                const formData = new FormData(document.getElementById("orderFormData"));
+                const totalPrice = document.getElementById("total").innerText;
+                const total = extractNumericValue(totalPrice);
+
+
+                console.log("formData:", Object.fromEntries(formData));
+                const requestData = {
+
+                    paymentMethod: "Razorpay",
+                    formData: Object.fromEntries(formData),
+                    totalPrice: total
+                };
+
+                $.ajax({
+                    url: "/checkout/razor-pay",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestData),
+                    success: function (res) {
+                        if (res.success) {
+                            initiateRazorpayPayment(res);
+                        } else {
+                            alert("Error creating Razorpay order.");
+                        }
+                    },
+                    error: function (error) {
+                        alert("Error: " + error.responseText || "Unknown error.");
+                    },
+                });
+            }
+
+            // Initiate Razorpay Payment
+            function initiateRazorpayPayment(orderDetails) {
+    const options = {
+        name: "shopee",
+        key: orderDetails.key_id,
+        amount: orderDetails.amount,
+        currency: orderDetails.currency,
+        order_id: orderDetails.order_id,
+        handler: function (response) {
+            sendCompleteRequest(response, orderDetails.formData);
+        },
+        prefill: {
+            contact: orderDetails.contact,
+            name: orderDetails.name,
+            email: orderDetails.email,
+        },
+    };
+
+    const rzp1 = new Razorpay(options);
+    rzp1.on("payment.failed", function (response) {
+        sendFailedRequest(response, orderDetails.formData);
+    });
+    rzp1.open();
+}
+
+
+            // Send completion request for Razorpay
+            function sendCompleteRequest(response, formData) {
+                const totalPrice = document.getElementById("total").innerText;
+                const total = extractNumericValue(totalPrice);
+
+                const requestData = {
+                    paymentMethod: "Razor Pay",
+                    formData: formData,
+                    totalPrice: total,
+                };
+
+                $.ajax({
+                    url: "/checkout/razor-pay/completed",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestData),
+                    success: function () {
+                        window.location.href = "/success-page";
+                    },
+                    error: function (error) {
+                        console.error("Completed route request error:", error);
+                    },
+                });
+            }
+
+            function sendFailedRequest(response, formData) {
+    const totalPrice = document.getElementById("total").innerText;
+    const total = extractNumericValue(totalPrice);
+
+    const requestData = {
+        paymentMethod: "Razorpay",
+        formData: formData,
+        totalPrice: total,
+        failureReason: response.error.description || "Payment failed for an unknown reason",
+    };
+
+    $.ajax({
+        url: "/checkout/razor-pay/failed",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(requestData),
+        success: function () {
+            Swal.fire({
+                icon: "error",
+                title: "Payment Failed",
+                text: "Your payment could not be processed. Please try again later.",
+            });
+        },
+        error: function (error) {
+            console.error("Error logging failed payment:", error);
+        },
+    });
+}
+
+
+            // Cash On Delivery Request
+            // Cash On Delivery Request
+            function sendCashOnDeliveryRequest() {
+                const totalPriceElement = document.getElementById("total").innerText;
+                const total = extractNumericValue(totalPriceElement);
+
+                // Check if total price is 1000 or more
+                if (total >= 1000) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Cash On Delivery is only available for orders under 1000 rupees.',
+                    });
+                    return; // Exit the function to prevent the request
+                }
+
+                const formData = new FormData(document.getElementById("orderFormData"));
+                const requestData = {
+                    paymentMethod: "CashOnDelivery",
+                    formData: Object.fromEntries(formData),
+                    totalPrice: total,
+                };
+
+                $.ajax({
+                    url: "/checkout/cash-on-delivery",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestData),
+                    success: function (data) {
+                        if (data.success) {
+                            // Show success SweetAlert
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Order Placed',
+                                text: 'Your Cash On Delivery order has been placed successfully!',
+                            }).then(() => {
+                                // Redirect to success page after user closes the alert
+                                window.location.href = "/success-page";
+                            });
+                        } else {
+                            alert("Error processing Cash On Delivery request.");
+                        }
+                    },
+                    error: function (error) {
+                        alert("Error: " + error.responseText || "Unknown error.");
+                    },
+                });
+            }
+
+
+            // Apply Coupon Code
+            function applyCoupon() {
+                const couponCode = document.getElementById('couponCode').value;
+                if (!couponCode) {
+                    document.getElementById('couponError').innerText = "Please enter a coupon code.";
+                    return;
+                }
+
+                const cartTotalElement = document.getElementById('total');
+                const checkoutTotalElement = document.getElementById('checkoutTotal');
+                const couponDiscountElement = document.getElementById('couponDiscount');
+                const cartTotal = extractNumericValue(cartTotalElement.innerText);
+
+                $.ajax({
+                    url: '/apply-coupon',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ couponCode: couponCode, cartTotal: cartTotal }),
+                    success: function (response) {
+                        if (response.success) {
+                            const discountAmount = response.discountAmount;
+                            const newTotal = response.newTotal;
+
+                            cartTotalElement.innerText = `$${newTotal.toFixed(2)}`;
+                            checkoutTotalElement.innerText = `$${newTotal.toFixed(2)}`;
+                            couponDiscountElement.innerText = `$${discountAmount.toFixed(2)}`;
+
+                            Swal.fire({
+                                icon: "success",
+                                title: "Coupon Applied",
+                                text: `You have received a discount of $${discountAmount.toFixed(2)}.`,
+                            });
+                        } else {
+                            document.getElementById('couponError').innerText = response.message;
+                        }
+                    },
+                    error: function () {
+                        document.getElementById('couponError').innerText = "Failed to apply coupon.";
+                    }
+                });
+            }
+
+
+
+            // Invalid Cart Alert
+            function invalidCart() {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Cart is empty!",
+                });
+            }
+
+            // Invalid Address Alert
+            function invalidAddress() {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please add a delivery address!",
+                });
+            }
+
+            function openCouponModal() {
+                const couponModel = document.getElementById("couponModal");
+                const overlay = document.getElementById("overlay");
+                couponModel.style.display = "block";
+                overlay.style.display = "block";
+            }
+
+            // close the coupon model
+            function closeCouponModal() {
+                const couponModel = document.getElementById("couponModal");
+                const overlay = document.getElementById("overlay");
+
+                couponModel.style.display = "none";
+                overlay.style.display = "none";
+            }
+        </script>
+
+
+        <%- include('../layout/user/footer.ejs') %>
